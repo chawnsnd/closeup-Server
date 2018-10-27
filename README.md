@@ -26,4 +26,5 @@ python3.6 -m pip -V
 # install dependencies
 python3.6 -m pip install websockets --user
 
-
+# run server 
+python3.6 close-up-server.py
