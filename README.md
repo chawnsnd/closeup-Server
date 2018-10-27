@@ -4,8 +4,26 @@ closeup-Server
 There isn't any guide yet. We'll make formatted documentation after launching our service 
 
 
-you need python3.4>= and pip 
+in advance, you need python3.4>= and pip 
+
 
 ``` bash
+tested on ubuntu 16.04 & 18.04 (AWS)
+======================================
+#install python3 
+sudo apt-get install python3.6
+
+#install  pip 
+sudo apt install python3-venv python3-pip
+
+#upgrade  pip 
+python3.6 -m pip install -U pip
+
+
+#check if installed properly
+python3.6 -m pip -V
+
 # install dependencies
-pip install websockets
+python3.6 -m pip install websockets --user
+
+
