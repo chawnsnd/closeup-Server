@@ -5,7 +5,7 @@ import websockets
 
 
 async def hello():
-    async with websockets.connect('ws://localhost:8765') as websocket:
+    async with websockets.connect('ws://ec2-13-59-71-223.us-east-2.compute.amazonaws.com:49152') as websocket:
         name = input("what is your name ? ")
 
         await websocket.send(name)
