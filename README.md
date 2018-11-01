@@ -13,6 +13,10 @@ tested on ubuntu 16.04 & 18.04 (AWS)
 #add PPA
 sudo add-apt-repository ppa:jonathonf/python-3.6
 
+#update
+
+sudo apt-get update
+
 #install python3 
 sudo apt-get install python3.6
 
