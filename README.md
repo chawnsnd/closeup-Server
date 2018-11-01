@@ -35,3 +35,6 @@ python3.6 -m pip install websockets --user
 
 # run server 
 python3.6 close-up-server.py
+
+# server key
+ssh -i "CLOSE_UP_SERVER_KEY.pem" ubuntu@ec2-13-59-71-223.us-east-2.compute.amazonaws.com
