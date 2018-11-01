@@ -9,7 +9,7 @@
             "request": "launch",
             "name": "Launch Chrome against localhost",
             // "url": "http://localhost:8080",
-            "url": "file:///home/bkh/closeup-Server/synchronized%20Server/HTMLSample/sampleClient.html",
+            "url": "file:///${file}",
             "webRoot": "${workspaceFolder}"
         }
     ]
