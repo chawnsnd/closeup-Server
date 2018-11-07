@@ -11,8 +11,22 @@ import pymongo
 logging.basicConfig()
 
 STATE = {'value': 0}
-LONLAT = {'a_lonlat':None, 'b_lonlat':None}
+LONLAT = {'a_lonlat': None, 'b_lonlat': None}
 USERS = set()
+
+
+myclient = pymongo.MongoClient("mongodb://localhost:27017/")
+
+mydb = myclient["mydatabase"]
+mycol = mydb["customers"]
+
+print(myclient.list_database_names())
+
+dblist = myclient.list_database_names()
+if "mydatabase" in dblist:
+    print("The database exists.")
+else:
+    print("NO DATABASE")
 
 
 def state_event():
