@@ -14,20 +14,23 @@ STATE = {'value': 0}
 LONLAT = {'a_lonlat': None, 'b_lonlat': None}
 USERS = set()
 
-
+#START DB
 myclient = pymongo.MongoClient("mongodb://localhost:27017/")
+mydb = myclient["CloseUpDB"]
+mycol = mydb["PoisCollection"]
 
-mydb = myclient["mydatabase"]
-mycol = mydb["customers"]
-
-print(myclient.list_database_names())
-
+#CHECK DB CONNECTION
 dblist = myclient.list_database_names()
-if "mydatabase" in dblist:
-    print("The database exists.")
+if "CloseUpDB" in dblist:
+    print("CloseUpDB connected")
 else:
     print("NO DATABASE")
 
+
+# SAMPLE CODE
+# print(myclient.list_database_names())
+# collist = mydb.list_collection_names()
+# print(mycol.find_one())
 
 def state_event():
     return json.dumps({'type': 'state', **STATE})
@@ -66,13 +69,17 @@ async def counter(websocket, path):
         await websocket.send(state_event())
         async for message in websocket:
             data = json.loads(message)
-            if data['a_lonlat'] != None and data['b_lonlat'] != None:
-                LONLAT['a_lonlat'] = data['a_lonlat']
-                LONLAT['b_lonlat'] = data['b_lonlat']
-                await notify_state()
-            else:
-                logging.error(
-                    "unsupported event: {}", data)
+            # WRITE CODE 
+
+
+            # SAMPLE CODE
+            # if data['a_lonlat'] != None and data['b_lonlat'] != None:
+            #     LONLAT['a_lonlat'] = data['a_lonlat']
+            #     LONLAT['b_lonlat'] = data['b_lonlat']
+            #     await notify_state()
+            # else:
+            #     logging.error(
+            #         "unsupported event: {}", data)
     finally:
         await unregister(websocket)
 
