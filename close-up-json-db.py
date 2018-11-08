@@ -14,12 +14,14 @@ STATE = {'value': 0}
 LONLAT = {'a_lonlat': None, 'b_lonlat': None}
 USERS = set()
 
-#START DB
+# START DB
 myclient = pymongo.MongoClient("mongodb://localhost:27017/")
 mydb = myclient["CloseUpDB"]
-mycol = mydb["PoisCollection"]
+# mycol = mydb["PoisCollection"]
+mycol = mydb["TestPoisCollection"]
 
-#CHECK DB CONNECTION
+
+# CHECK DB CONNECTION
 dblist = myclient.list_database_names()
 if "CloseUpDB" in dblist:
     print("CloseUpDB connected")
@@ -69,8 +71,14 @@ async def counter(websocket, path):
         await websocket.send(state_event())
         async for message in websocket:
             data = json.loads(message)
-            # WRITE CODE 
+            # mycol.insert_many(data['persons'])
+            # mycol.insert_many(data['pois'])
+            myquery = {"address": {"$regex": "^S"}}
+            newvalues = {"$set": {"name": "Minnie"}}
+            mycol.update_many(data['persons'])
+            mycol.update_many(data['pois'])
 
+            # WRITE CODE
 
             # SAMPLE CODE
             # if data['a_lonlat'] != None and data['b_lonlat'] != None:
