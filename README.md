@@ -42,16 +42,16 @@ mongodb installation
 
 ```bash
 
-tested on ubuntu 16.04 
+tested on ubuntu 
 
 #Import the public key used by the package management system
 sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 9DA31620334BD75D9DCB49F368818C72E52529D4
 
-#on ubuntu 16.04
-echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/4.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.0.list
-
-#on ubuntu 18.04
-echo "deb [ arch=amd64 ] https://repo.mongodb.org/apt/ubuntu bionic/mongodb-org/4.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.0.list
+#Create a list file for MongoDB (depends on your system)
+  #if your system is ubuntu 16.04
+  echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/4.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.0.list
+  #if your system is ubuntu 18.04
+  echo "deb [ arch=amd64 ] https://repo.mongodb.org/apt/ubuntu bionic/mongodb-org/4.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.0.list
 
 #Reload local package database.
 sudo apt-get update
@@ -65,4 +65,14 @@ echo "mongodb-org-server hold" | sudo dpkg --set-selections
 echo "mongodb-org-shell hold" | sudo dpkg --set-selections
 echo "mongodb-org-mongos hold" | sudo dpkg --set-selections
 echo "mongodb-org-tools hold" | sudo dpkg --set-selections
+
+#start 
+sudo service mongod start
+
+#check if running
+cat /var/log/mongodb/mongod.log |grep [initandlisten]  #[initandlisten] waiting for connections on port 27017
+
+#stop 
+sudo service mongod stop
+
 ```
