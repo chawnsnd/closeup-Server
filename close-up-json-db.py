@@ -7,6 +7,8 @@ import json
 import logging
 import websockets
 import pymongo
+import sys
+from bson.json_util import dumps
 
 logging.basicConfig()
 
@@ -16,9 +18,7 @@ USERS = set()
 
 # START DB
 myclient = pymongo.MongoClient("mongodb://localhost:27017/")
-myclient = pymongo.MongoClient("mongodb://192.168.0.17:27017/")
 mydb = myclient["CloseUpDB"]
-# mycol = mydb["PoisCollection"]
 mycol = mydb["TestPoisCollection"]
 
 
@@ -35,55 +35,76 @@ else:
 # collist = mydb.list_collection_names()
 # print(mycol.find_one())
 
-def state_event():
-    return json.dumps({'type': 'state', **STATE})
+def state_event(squareBound):
+    global mycol
+    markers = []
+    maxLat = squareBound[0]
+    minLat = squareBound[1]
+    maxLon = squareBound[2]
+    minLon = squareBound[3]
+    myquery = {"lat":{"$gt":minLat, "$lt":maxLat},"lon":{"$gt":minLon,"$lt":maxLon}}
+    result = mycol.find(myquery)
+    # for poi in result:
+    #     # print(poi)
+    #     markers.append([poi['lon'],poi['lat']])
+    # # return json.dumps({'type': 'state', **STATE})
+    return dumps(result)
 
 
-def users_event():
-    return json.dumps({'type': 'users', 'count': len(USERS)})
-
-
-async def notify_state():
+async def notify_state(squareBound):
     if USERS:       # asyncio.wait doesn't accept an empty list
-        message = state_event()
+        message = state_event(squareBound)
+        # for user in USERS:
+        #     user.send(message) 
         await asyncio.wait([user.send(message) for user in USERS])
 
-
-async def notify_users():
-    if USERS:       # asyncio.wait doesn't accept an empty list
-        message = users_event()
-        await asyncio.wait([user.send(message) for user in USERS])
 
 
 async def register(websocket):
     USERS.add(websocket)
-    await notify_users()
 
 
 async def unregister(websocket):
     USERS.remove(websocket)
-    await notify_users()
 
 
 async def counter(websocket, path):
-    # register(websocket) sends user_event() to websocket
     global mycol
+    # register(websocket) sends user_event() to websocket
     await register(websocket)
     try:
-        await websocket.send(state_event())
+        # await websocket.send(state_event())
         async for message in websocket:
             data = json.loads(message)
+            maxLat = 0
+            minLat = sys.maxsize
+            maxLon = 0
+            minLon = sys.maxsize
 
             # WRITE CODE
+            # insert if does not exist 
             for poi in data['pois']:
-                poiexist = mycol.find({"key":poi[0]})
-                if mycol.find(poi[0]):
+                #check if poi exists in collecion
+                poiexist = mycol.find({"key":poi[0]}).limit(1).count()
+                if poiexist:
                     continue
+                #update if no poi in collection 
                 myquery = { "key": poi[0] }
                 newvalues = { "$set": { "lon": poi[1]['lon'],"lat":poi[1]['lat'] } }
                 mycol.update_one(myquery,newvalues,True)
-
-
+            for person in data['persons']:
+                print(person)
+                maxLat = max(person['lat'],maxLat)
+                minLat = min(person['lat'],minLat)
+                maxLon = max(person['lon'],maxLon)
+                minLon = min(person['lon'],minLon)
+            print(maxLat)
+            print(minLat)
+            print(maxLon)
+            print(minLon)
+            squareBound = [maxLat,minLat,maxLon,minLon]
+            await notify_state(squareBound)
+            
             # SAMPLE CODE
             # mycol.insert_many(data['persons'])
             # mycol.insert_many(data['pois'])
