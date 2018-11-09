@@ -37,7 +37,6 @@ else:
 
 def state_event(squareBound):
     global mycol
-    markers = []
     maxLat = squareBound[0]
     minLat = squareBound[1]
     maxLon = squareBound[2]
@@ -93,15 +92,12 @@ async def counter(websocket, path):
                 newvalues = { "$set": { "lon": poi[1]['lon'],"lat":poi[1]['lat'] } }
                 mycol.update_one(myquery,newvalues,True)
             for person in data['persons']:
-                print(person)
+                # print(person)
                 maxLat = max(person['lat'],maxLat)
                 minLat = min(person['lat'],minLat)
                 maxLon = max(person['lon'],maxLon)
                 minLon = min(person['lon'],minLon)
-            print(maxLat)
-            print(minLat)
-            print(maxLon)
-            print(minLon)
+
             squareBound = [maxLat,minLat,maxLon,minLon]
             await notify_state(squareBound)
             
