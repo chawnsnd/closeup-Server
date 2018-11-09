@@ -16,6 +16,7 @@ USERS = set()
 
 # START DB
 myclient = pymongo.MongoClient("mongodb://localhost:27017/")
+myclient = pymongo.MongoClient("mongodb://192.168.0.17:27017/")
 mydb = myclient["CloseUpDB"]
 # mycol = mydb["PoisCollection"]
 mycol = mydb["TestPoisCollection"]
@@ -66,21 +67,26 @@ async def unregister(websocket):
 
 async def counter(websocket, path):
     # register(websocket) sends user_event() to websocket
+    global mycol
     await register(websocket)
     try:
         await websocket.send(state_event())
         async for message in websocket:
             data = json.loads(message)
-            # mycol.insert_many(data['persons'])
-            # mycol.insert_many(data['pois'])
-            myquery = {"address": {"$regex": "^S"}}
-            newvalues = {"$set": {"name": "Minnie"}}
-            mycol.update_many(data['persons'])
-            mycol.update_many(data['pois'])
 
             # WRITE CODE
+            for poi in data['pois']:
+                poiexist = mycol.find({"key":poi[0]})
+                if mycol.find(poi[0]):
+                    continue
+                myquery = { "key": poi[0] }
+                newvalues = { "$set": { "lon": poi[1]['lon'],"lat":poi[1]['lat'] } }
+                mycol.update_one(myquery,newvalues,True)
+
 
             # SAMPLE CODE
+            # mycol.insert_many(data['persons'])
+            # mycol.insert_many(data['pois'])
             # if data['a_lonlat'] != None and data['b_lonlat'] != None:
             #     LONLAT['a_lonlat'] = data['a_lonlat']
             #     LONLAT['b_lonlat'] = data['b_lonlat']
