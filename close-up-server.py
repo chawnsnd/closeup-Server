@@ -37,6 +37,11 @@ else:
 
 def insert_pois(pois,category):
     global mycol 
+
+    if pois is None:
+        print("Failed (no pois)")
+        return False
+
     for poi in pois:
         criteria = {"id":poi['id']}
         setCategory= {"$set" : {"categories":category}}
@@ -48,6 +53,8 @@ def insert_pois(pois,category):
                 mycol.update_one(criteria,addCategory)
             continue
         mycol.insert(poi)
+
+    print("insertion/update complete")
     return False
 
 
