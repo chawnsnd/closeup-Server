@@ -68,7 +68,8 @@ echo "mongodb-org-tools hold" | sudo dpkg --set-selections
 sudo service mongod start
 
 #check if running
-cat /var/log/mongodb/mongod.log |grep [initandlisten]  #[initandlisten] waiting for connections on port 27017
+cat /var/log/mongodb/mongod.log |grep waiting 
+※ [initandlisten] waiting for connections on port 27017 should come out
 
 #stop 
 sudo service mongod stop
