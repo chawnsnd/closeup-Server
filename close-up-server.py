@@ -55,7 +55,7 @@ def insert_pois(pois,category):
         mycol.insert(poi)
 
     print("insertion/update complete")
-    return False
+    return True
 
 
 def query_pois(keyWord,col):
