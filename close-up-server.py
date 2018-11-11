@@ -40,7 +40,8 @@ def insert_pois(pois,categories):
 
     if pois is None:
         print("Failed (no pois)")
-        return False
+        return dumps({"type":"insert_pois","response":"insertion/update fail"})
+
 
     for poi in pois:
         criteria = {"id":poi['id']}
@@ -66,7 +67,7 @@ def insert_pois(pois,categories):
         mycol.insert(poi)
 
     print("insertion/update complete")
-    return True
+    return dumps({"type":"insert_pois","response":"insertion/update success"})
 
 
 def query_pois(keyWord,col):
@@ -102,15 +103,23 @@ def query_poi(id):
     poi = mycol.find(query).limit(1)
     return dumps(poi)
 
-def query_square_bound(squareBound):
+def query_square_bound(people_chosen):
     global mycol
-    maxLat = squareBound[0]
-    minLat = squareBound[1]
-    maxLon = squareBound[2]
-    minLon = squareBound[3]
+    maxLat = 0
+    minLat = sys.maxsize
+    maxLon = 0
+    minLon = sys.maxsize
+
+    for person in people_chosen:
+        # print(person)
+        maxLat = max(person['lat'],maxLat)
+        minLat = min(person['lat'],minLat)
+        maxLon = max(person['lon'],maxLon)
+        minLon = min(person['lon'],minLon)
+
     myquery = {"lat":{"$gt":minLat, "$lt":maxLat},"lon":{"$gt":minLon,"$lt":maxLon}}
-    result = mycol.find(myquery)
-    return dumps(result)
+    result = dumps({"type":"query_square_bound","pois":mycol.find(myquery)})
+    return result
 
 #이름, 큰 ,주소, 중간주소, 잗은 디테일소, 카테고리들, 도로명주소 
 def query_pois_all(keyWord):
@@ -120,16 +129,16 @@ def query_pois_all(keyWord):
                     {"address_detail":keyWord},{"address_road":keyWord}]}
     #Sample code for querynig included str 
     # query = {"$or":[{"name":/searchStr/},{"address_big":/searchStr/}]}
-    pois = mycol.find({},query)
+    pois = mycol.find(query)
     return dumps(pois)
 
 
 
 
 
-async def notify_state(squareBound):
+
+async def notify_state(message):
     if USERS:       # asyncio.wait doesn't accept an empty list
-        message = query_square_bound(squareBound)
         await asyncio.wait([user.send(message) for user in USERS])
 
 
@@ -139,6 +148,7 @@ async def register(websocket):
 async def unregister(websocket):
     USERS.remove(websocket)
 
+
 async def serve_api(websocket, path):
     global mycol
     # register(websocket) sends user_event() to websocket
@@ -147,38 +157,18 @@ async def serve_api(websocket, path):
         # await websocket.send(query_square_bound())
         async for message in websocket:
             data = json.loads(message)
+            #do command
             command = data['command']
+
             if command == "connect()":
                 print("Client Connected")
+
             elif command == "insert_pois":
-                insert_pois(data['pois'],data['categories'])
+                await notify_state(insert_pois(data['pois'],data['categories']))
 
-
-            maxLat = 0
-            minLat = sys.maxsize
-            maxLon = 0
-            minLon = sys.maxsize
-
-            # WRITE CODE
-            # insert if does not exist 
-            for poi in data['pois']:
-                #check if poi exists in collecion
-                poiexist = mycol.find({"key":poi[0]}).limit(1).count()
-                if poiexist:
-                    continue
-                #update if no poi in collection 
-                myquery = { "key": poi[0] }
-                newvalues = { "$set": { "lon": poi[1]['lon'],"lat":poi[1]['lat'] } }
-                mycol.update_one(myquery,newvalues,True)
-            for person in data['persons']:
-                # print(person)
-                maxLat = max(person['lat'],maxLat)
-                minLat = min(person['lat'],minLat)
-                maxLon = max(person['lon'],maxLon)
-                minLon = min(person['lon'],minLon)
-
-            squareBound = [maxLat,minLat,maxLon,minLon]
-            await notify_state(squareBound)
+            elif command =="query_square_bound":
+                await notify_state(query_square_bound(data['selectedPeople']))    
+            
             
     finally:
         await unregister(websocket)
