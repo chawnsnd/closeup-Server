@@ -35,7 +35,7 @@ else:
 # collist = mydb.list_collection_names()
 # print(mycol.find_one())
 
-def insert_pois(pois,category):
+def insert_pois(pois,categories):
     global mycol 
 
     if pois is None:
@@ -44,14 +44,25 @@ def insert_pois(pois,category):
 
     for poi in pois:
         criteria = {"id":poi['id']}
-        setCategory= {"$set" : {"categories":category}}
-        addCategory = {"$push": {"categories":category}}
-        if mycol.find(criteria).limit(1).count():
-            if poi['categories'] is None: 
-                mycol.update_one(criteria,setCategory)
+        setCategories= {"$set" : {"categories":categories}}
+        addCategories = {"$push": {"categories":{"$each":categories}}}
+        poi_doc = mycol.find_one(criteria)
+        
+        #check categories if exists
+        if poi_doc:
+            #update categories
+            if not 'categories' in poi_doc:
+                mycol.update_one(criteria,setCategories,True)
+                continue
+            if poi_doc['categories'] is None: 
+                mycol.update_one(criteria,setCategories,True)
             else:
-                mycol.update_one(criteria,addCategory)
+                #skip if all elements in categories are in poi_doc , update all if not
+                if all(category in poi_doc['categories'] for category in categories):
+                    continue
+                mycol.update_one(criteria,addCategories)
             continue
+        
         mycol.insert(poi)
 
     print("insertion/update complete")
@@ -136,6 +147,13 @@ async def serve_api(websocket, path):
         # await websocket.send(query_square_bound())
         async for message in websocket:
             data = json.loads(message)
+            command = data['command']
+            if command == "connect()":
+                print("Client Connected")
+            elif command == "insert_pois":
+                insert_pois(data['pois'],data['categories'])
+
+
             maxLat = 0
             minLat = sys.maxsize
             maxLon = 0
@@ -165,6 +183,6 @@ async def serve_api(websocket, path):
     finally:
         await unregister(websocket)
 
-asyncio.get_event_loop().run_until_complete(
-    websockets.serve(serve_api, 'ec2-13-59-71-223.us-east-2.compute.amazonaws.com', 49152))
+# asyncio.get_event_loop().run_until_complete(websockets.serve(serve_api, 'ec2-13-59-71-223.us-east-2.compute.amazonaws.com', 49152))
+asyncio.get_event_loop().run_until_complete(websockets.serve(serve_api, 'localhost', 6789))
 asyncio.get_event_loop().run_forever()
