@@ -75,3 +75,50 @@ cat /var/log/mongodb/mongod.log |grep waiting
 sudo service mongod stop
 
 ```
+
+##Anaconda3 installation 
+
+```bash 
+#move to temp 
+cd /tmp
+
+#use curl to download anaconda
+curl -O https://repo.continuum.io/archive/Anaconda3-5.0.1-Linux-x86_64.sh
+
+#verify the data integration of the installer 
+sha256sum Anaconda3-5.0.1-Linux-x86_64.sh
+(you should have received 55e4db1919f49c92d5abbf27a4be5986a~)
+
+# run the installer
+bash Anaconda3-5.0.1-Linux-x86_64.sh
+
+#keep say yes
+yes, yes
+
+#source to activate conda
+source ~/.bashrc
+
+# verify installation
+conda list
+
+#check what python versions are available \
+conda search "^python$"
+
+#make your python env  (for example here, python3.6_ana is the name of the env)
+conda create --name python3.6_ana python=3.6
+
+#activate your env
+source activate python3.6_ana
+
+#install websockets
+conda install -c conda-forge websockets
+
+#install numpy
+conda install numpy
+
+#install scikit-learn
+conda install -c anaconda scikit-learn 
+
+#install matplotlib
+conda install matplotlib
+```
