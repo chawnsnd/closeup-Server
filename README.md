@@ -1,4 +1,4 @@
-closeup-Server
+#closeup-Server instruction
 ==============
 
 
@@ -74,11 +74,17 @@ cat /var/log/mongodb/mongod.log |grep waiting
 #to stop 
 sudo service mongod stop
 
+
+
 # to use backup data 
+
+#backup a collection
+mongodump  --db CloseUpDB --collection TestPoisCollection
+#restore
 mongorestore --port 27017 --db CloseUpDB --collection TestPoisCollection TestPoisCollection.bson --drop
 ```
 
-##Anaconda3 installation 
+#Anaconda3 installation 
 
 ```bash 
 #move to temp 
