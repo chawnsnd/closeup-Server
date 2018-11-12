@@ -113,6 +113,9 @@ conda create --name python3.6_ana python=3.6
 #activate your env
 source activate python3.6_ana
 
+#(optional) update python
+conda update python
+
 #install websockets
 conda install -c conda-forge websockets
 
