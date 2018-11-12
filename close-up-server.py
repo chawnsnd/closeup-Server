@@ -101,7 +101,7 @@ def query_poi(id):
     global mycol
     query = {"id":id}
     poi = mycol.find(query).limit(1)
-    return dumps(poi)
+    return dumps({"type":"query_poi","response":poi})
 
 def query_square_bound(people_chosen):
     global mycol
@@ -118,7 +118,7 @@ def query_square_bound(people_chosen):
         minLon = min(person['lon'],minLon)
 
     myquery = {"lat":{"$gt":minLat, "$lt":maxLat},"lon":{"$gt":minLon,"$lt":maxLon}}
-    result = dumps({"type":"query_square_bound","pois":mycol.find(myquery)})
+    result = dumps({"type":"query_square_bound","response":mycol.find(myquery)})
     return result
 
 #이름, 큰 ,주소, 중간주소, 잗은 디테일소, 카테고리들, 도로명주소 
@@ -168,6 +168,8 @@ async def serve_api(websocket, path):
 
             elif command =="query_square_bound":
                 await notify_state(query_square_bound(data['selectedPeople']))    
+            elif command =="query_poi":
+                await notify_state(query_poi(data['id']))
             
             
     finally:
