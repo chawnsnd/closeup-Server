@@ -71,9 +71,11 @@ sudo service mongod start
 cat /var/log/mongodb/mongod.log |grep waiting 
 ※ [initandlisten] waiting for connections on port 27017 should come out
 
-#stop 
+#to stop 
 sudo service mongod stop
 
+# to use backup data 
+mongorestore --port 27017 --db CloseUpDB --collection TestPoisCollection TestPoisCollection.bson --drop
 ```
 
 ##Anaconda3 installation 
