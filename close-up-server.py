@@ -34,9 +34,11 @@ async def notify_state(message):
         await asyncio.wait([user.send(message) for user in USERS])
 
 async def register(websocket):
+    print("Client Connected")
     USERS.add(websocket)
 
 async def unregister(websocket):
+    print("Client disconnected")
     USERS.remove(websocket)
 
 # SAMPLE CODE
@@ -198,5 +200,5 @@ async def serve_api(websocket, path):
         await unregister(websocket)
 
 # asyncio.get_event_loop().run_until_complete(websockets.serve(serve_api, 'ec2-13-59-71-223.us-east-2.compute.amazonaws.com', 49152))
-asyncio.get_event_loop().run_until_complete(websockets.serve(serve_api, '192.168.0.19', 49152))
+asyncio.get_event_loop().run_until_complete(websockets.serve(serve_api, 'localhost', 49152))
 asyncio.get_event_loop().run_forever()
