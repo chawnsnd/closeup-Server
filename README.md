@@ -87,7 +87,8 @@ curl -O https://repo.continuum.io/archive/Anaconda3-5.0.1-Linux-x86_64.sh
 
 #verify the data integration of the installer 
 sha256sum Anaconda3-5.0.1-Linux-x86_64.sh
-(you should have received 55e4db1919f49c92d5abbf27a4be5986a~)
+
+※(you should have received 55e4db1919f49c92d5abbf27a4be5986a~)
 
 # run the installer
 bash Anaconda3-5.0.1-Linux-x86_64.sh
