@@ -33,15 +33,11 @@ async def notify_state(message):
     if USERS:       # asyncio.wait doesn't accept an empty list
         await asyncio.wait([user.send(message) for user in USERS])
 
-
 async def register(websocket):
     USERS.add(websocket)
 
 async def unregister(websocket):
     USERS.remove(websocket)
-
-
-
 
 # SAMPLE CODE
 # print(myclient.list_database_names())
@@ -84,16 +80,16 @@ def insert_pois(pois,categories):
 
 
 def query_pois(keyWord,col):
-    query = {"$or":[{"upperBizName":keyWord},
-                    {"middleBizName":keyWord},
-                    {"lowerBizName":keyWord},
-                    {"detailBizName":keyWord},
-                    {"name":keyWord},
-                    {"upperAddrName":keyWord},
-                    {"middleAddrName":keyWord},
-                    {"lowerAddrName":keyWord},
-                    {"detailAddrName":keyWord},
-                    {"roadName":keyWord},
+    query = {"$or":[{"upperBizName":{"$regex":keyWord}},
+                    {"middleBizName":{"$regex":keyWord}},
+                    {"lowerBizName":{"$regex":keyWord}},
+                    {"detailBizName":{"$regex":keyWord}},
+                    {"name":{"$regex":keyWord}},
+                    {"upperAddrName":{"$regex":keyWord}},
+                    {"middleAddrName":{"$regex":keyWord}},
+                    {"lowerAddrName":{"$regex":keyWord}},
+                    {"detailAddrName":{"$regex":keyWord}},
+                    {"roadName":{"$regex":keyWord}},
                     ]}
     #Sample code for querynig included str 
     # query = {"$or":[{"name":/searchStr/},{"address_big":/searchStr/}]}
@@ -107,8 +103,8 @@ def query_pois(keyWord,col):
     # "lowerAddrName" : "죽전동",
     # "detailAddrName" : "",
     # "roadName" : "용구대로",
-    pois = col.find(query)
-    return dumps({"type":"query_pois","response":pois})
+    result = dumps({"type":"query_pois","response":col.find(query)})
+    return result
 
 
 def update_star(id,starPoint):
@@ -170,11 +166,6 @@ def query_pois_all(keyWord):
     return dumps({"type":"query_pois_all","response":pois})
 
 
-
-
-
-
-
 async def serve_api(websocket, path):
     global mycol
     # register(websocket) sends user_event() to websocket
@@ -193,7 +184,7 @@ async def serve_api(websocket, path):
                 await notify_state(insert_pois(data['pois'],data['categories']))
 
             elif command =="query_square_bound":
-                await notify_state(query_square_bound(data['selectedPeople']))    
+                await notify_state(query_square_bound(data['people_chosen']))    
             elif command =="query_poi":
                 await notify_state(query_poi(data['id']))
 
