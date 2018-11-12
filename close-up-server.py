@@ -29,6 +29,19 @@ if "CloseUpDB" in dblist:
 else:
     print("NO DATABASE")
 
+async def notify_state(message):
+    if USERS:       # asyncio.wait doesn't accept an empty list
+        await asyncio.wait([user.send(message) for user in USERS])
+
+
+async def register(websocket):
+    USERS.add(websocket)
+
+async def unregister(websocket):
+    USERS.remove(websocket)
+
+
+
 
 # SAMPLE CODE
 # print(myclient.list_database_names())
@@ -71,31 +84,55 @@ def insert_pois(pois,categories):
 
 
 def query_pois(keyWord,col):
-    query = {"$or":[{"name":keyWord},{"address_big":keyWord},
-                    {"address_mid":keyWord},{"address_small":keyWord},
-                    {"address_detail":keyWord},{"address_road":keyWord}]}
+    query = {"$or":[{"upperBizName":keyWord},
+                    {"middleBizName":keyWord},
+                    {"lowerBizName":keyWord},
+                    {"detailBizName":keyWord},
+                    {"name":keyWord},
+                    {"upperAddrName":keyWord},
+                    {"middleAddrName":keyWord},
+                    {"lowerAddrName":keyWord},
+                    {"detailAddrName":keyWord},
+                    {"roadName":keyWord},
+                    ]}
     #Sample code for querynig included str 
     # query = {"$or":[{"name":/searchStr/},{"address_big":/searchStr/}]}
-    pois = col.find({},query)
-    return dumps(pois)
+    # "upperBizName" : "쇼핑",
+    # "middleBizName" : "상설할인매장",
+    # "lowerBizName" : "상설할인매장기타",
+    # "detailBizName" : "기타",
+    # "name" : "콜렉티드 죽전점",
+    # "upperAddrName" : "경기",
+    # "middleAddrName" : "용인시 수지구",
+    # "lowerAddrName" : "죽전동",
+    # "detailAddrName" : "",
+    # "roadName" : "용구대로",
+    pois = col.find(query)
+    return dumps({"type":"query_pois","response":pois})
 
 
 def update_star(id,starPoint):
     global mycol
     starCount = 1
+    starPoint = float(starPoint)
     criteria = {"id":id}
-    setStar = {"$set" : {"starPoint":starPoint,"starCount":starCount}}
-    poi = mycol.find(criteria)
-    if poi['star'] is None:
-        mycol.update_one(criteria,setStar)
-        return True
-    else :
+    poi = mycol.find_one(criteria)
+
+    if poi['starPoint'] is 0:
+        print("star update new")
+    elif poi['starPoint']:
+        starPoint += poi['starPoint']*poi['starCount']
         starCount+=poi['starCount']
         starPoint /=starCount
-        mycol.update_one(criteria,setStar)
-        return True
-
-    return False
+        print("star updated existing")
+    else :
+        return dumps({"type":"update_star","response":"update failed"})
+    
+    setStar = {"$set" : {"starPoint":starPoint,"starCount":starCount}}
+    mycol.update_one(criteria,setStar)
+    return dumps({"type":"starPoint", "response":"update successed"})
+    # print("star is not updated/ nothing to update")
+    # return dumps({"type":"update_star","response":"nothing updated"})
 
 def query_poi(id):
     global mycol
@@ -130,23 +167,12 @@ def query_pois_all(keyWord):
     #Sample code for querynig included str 
     # query = {"$or":[{"name":/searchStr/},{"address_big":/searchStr/}]}
     pois = mycol.find(query)
-    return dumps(pois)
+    return dumps({"type":"query_pois_all","response":pois})
 
 
 
 
 
-
-async def notify_state(message):
-    if USERS:       # asyncio.wait doesn't accept an empty list
-        await asyncio.wait([user.send(message) for user in USERS])
-
-
-async def register(websocket):
-    USERS.add(websocket)
-
-async def unregister(websocket):
-    USERS.remove(websocket)
 
 
 async def serve_api(websocket, path):
@@ -170,11 +196,16 @@ async def serve_api(websocket, path):
                 await notify_state(query_square_bound(data['selectedPeople']))    
             elif command =="query_poi":
                 await notify_state(query_poi(data['id']))
+
+            elif command =="update_star":
+                await notify_state(update_star(data['id'],data['starPoint']))
+            elif command == "query_pois":
+                await notify_state(query_pois(data['keyWord'],mycol))
             
             
     finally:
         await unregister(websocket)
 
 # asyncio.get_event_loop().run_until_complete(websockets.serve(serve_api, 'ec2-13-59-71-223.us-east-2.compute.amazonaws.com', 49152))
-asyncio.get_event_loop().run_until_complete(websockets.serve(serve_api, 'localhost', 6789))
+asyncio.get_event_loop().run_until_complete(websockets.serve(serve_api, '192.168.0.19', 49152))
 asyncio.get_event_loop().run_forever()
