@@ -29,17 +29,6 @@ if "CloseUpDB" in dblist:
 else:
     print("NO DATABASE")
 
-async def notify_state(message):
-    if USERS:       # asyncio.wait doesn't accept an empty list
-        await asyncio.wait([user.send(message) for user in USERS])
-
-async def register(websocket):
-    print("Client Connected")
-    USERS.add(websocket)
-
-async def unregister(websocket):
-    print("Client disconnected")
-    USERS.remove(websocket)
 
 # SAMPLE CODE
 # print(myclient.list_database_names())
@@ -93,19 +82,8 @@ def query_pois(keyWord,col):
                     {"detailAddrName":{"$regex":keyWord}},
                     {"roadName":{"$regex":keyWord}},
                     ]}
-    #Sample code for querynig included str 
-    # query = {"$or":[{"name":/searchStr/},{"address_big":/searchStr/}]}
-    # "upperBizName" : "쇼핑",
-    # "middleBizName" : "상설할인매장",
-    # "lowerBizName" : "상설할인매장기타",
-    # "detailBizName" : "기타",
-    # "name" : "콜렉티드 죽전점",
-    # "upperAddrName" : "경기",
-    # "middleAddrName" : "용인시 수지구",
-    # "lowerAddrName" : "죽전동",
-    # "detailAddrName" : "",
-    # "roadName" : "용구대로",
-    result = dumps({"type":"query_pois","response":col.find(query)})
+    # result = dumps({"type":"query_pois","response":col.find(query)}) #return json
+    result = col.find(query)  #return cursor
     return result
 
 
@@ -153,20 +131,34 @@ def query_square_bound(people_chosen):
         minLon = min(person['lon'],minLon)
 
     myquery = {"lat":{"$gt":minLat, "$lt":maxLat},"lon":{"$gt":minLon,"$lt":maxLon}}
-    result = dumps({"type":"query_square_bound","response":mycol.find(myquery)})
+    # result = dumps({"type":"query_square_bound","response":mycol.find(myquery)})
+    result = mycol.find(myquery)
     return result
 
-#이름, 큰 ,주소, 중간주소, 잗은 디테일소, 카테고리들, 도로명주소 
-def query_pois_all(keyWord):
-    global mycol 
-    query = {"$or":[{"name":keyWord},{"address_big":keyWord},
-                    {"address_mid":keyWord},{"address_small":keyWord},
-                    {"address_detail":keyWord},{"address_road":keyWord}]}
-    #Sample code for querynig included str 
-    # query = {"$or":[{"name":/searchStr/},{"address_big":/searchStr/}]}
-    pois = mycol.find(query)
-    return dumps({"type":"query_pois_all","response":pois})
+def doAlgo(peopleList, poisList):
+    recommendList = poisList
+    return recommendList
 
+def recommend_api(people,keyWord):
+    boundCollection =query_square_bound(people)
+
+    query_poisList = list(query_pois(keyWord,boundCollection))
+    peopleList = list(people)
+    recommendation = doAlgo(peopleList,query_poisList)
+    return recommendation
+
+
+async def notify_state(message):
+    if USERS:       # asyncio.wait doesn't accept an empty list
+        await asyncio.wait([user.send(message) for user in USERS])
+
+async def register(websocket):
+    print("Client Connected")
+    USERS.add(websocket)
+
+async def unregister(websocket):
+    print("Client disconnected")
+    USERS.remove(websocket)
 
 async def serve_api(websocket, path):
     global mycol
@@ -181,24 +173,22 @@ async def serve_api(websocket, path):
 
             if command == "connect()":
                 print("Client Connected")
-
             elif command == "insert_pois":
                 await notify_state(insert_pois(data['pois'],data['categories']))
-
             elif command =="query_square_bound":
-                await notify_state(query_square_bound(data['people_chosen']))    
+                await notify_state(dumps({"type":"query_square_bound","response":query_square_bound(data['people_chosen'])}))    
             elif command =="query_poi":
-                await notify_state(query_poi(data['id']))
-
+                await notify_state(dumps({"type":"query_poi","response":query_poi(data['id'])}))
             elif command =="update_star":
                 await notify_state(update_star(data['id'],data['starPoint']))
             elif command == "query_pois":
-                await notify_state(query_pois(data['keyWord'],mycol))
-            
+                await notify_state(dumps({"type":"query_pois","response":query_pois(data['keyWord'],mycol)}))
+            elif command == "recommend_api":
+                await notify_state(dumps({"type":"recommend_api","response":recommend_api(data['people_chosen'],data['keyWord'])}))            
             
     finally:
         await unregister(websocket)
 
 # asyncio.get_event_loop().run_until_complete(websockets.serve(serve_api, 'ec2-13-59-71-223.us-east-2.compute.amazonaws.com', 49152))
-asyncio.get_event_loop().run_until_complete(websockets.serve(serve_api, 'localhost', 49152))
+asyncio.get_event_loop().run_until_complete(websockets.serve(serve_api, '172.31.43.31', 49152))
 asyncio.get_event_loop().run_forever()
