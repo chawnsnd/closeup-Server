@@ -69,7 +69,7 @@ async def serve_api(websocket, path):
             elif command =="update_star":
                 await notify_state(update_star(data['id'],data['starPoint']))
             elif command == "query_pois":
-                await notify_state(dumps({"type":"query_pois","response":query_pois(data['keyWord'],mycol)}))
+                await notify_state(dumps({"type":"query_pois","response":query_pois(data['keyWord'],data['count'],data['page'],mycol)}))
             elif command == "recommend_api":
                 await notify_state(dumps({"type":"recommend_api","response":recommend_api(data['people_chosen'],data['keyWord'])}))
             elif command == "query_square_bound_and_keyword":

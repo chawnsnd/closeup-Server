@@ -49,7 +49,7 @@ def insert_pois(pois,categories):
     return dumps({"type":"insert_pois","response":"insertion/update success"})
 
 
-def query_pois(keyWord,col):
+def query_pois(keyWord, count, page, col):
     query = {"$or":[{"upperBizName":{"$regex":keyWord}},
                     {"middleBizName":{"$regex":keyWord}},
                     {"lowerBizName":{"$regex":keyWord}},
@@ -62,8 +62,11 @@ def query_pois(keyWord,col):
                     {"roadName":{"$regex":keyWord}},
                     ]}
     # result = dumps({"type":"query_pois","response":col.find(query)}) #return json
-    result = col.find(query)  #return cursor
-    return result
+    skips = count * (page - 1)
+    totalCount = col.count(query)
+    result = col.find(query).skip(skips).limit(count)  #return cursor
+    returnResult = {"pois": result, "totalCount": totalCount}
+    return returnResult
 
 
 def update_star(id,starPoint):
