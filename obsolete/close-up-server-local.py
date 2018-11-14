@@ -9,7 +9,7 @@ import websockets
 import pymongo
 import sys
 from bson.json_util import dumps
-
+from component.apis import query_square_bound
 logging.basicConfig()
 
 STATE = {'value': 0}
