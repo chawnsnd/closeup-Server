@@ -19,6 +19,6 @@ bash Anaconda3-5.0.1-Linux-x86_64.sh
 
 
 echo "==========================anaconda installation completed============"
-
+echo "type 'source ~/.bashrc' to activate conda"
 
 exit 0

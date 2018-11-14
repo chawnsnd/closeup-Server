@@ -4,9 +4,6 @@
 
 echo "===================[Anaconda3 module installation ]======================="
 
-echo "source to activate conda"
-source ~/.bashrc
-
 echo " verify installation"
 conda list
 
