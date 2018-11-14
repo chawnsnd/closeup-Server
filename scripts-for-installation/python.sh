@@ -27,5 +27,5 @@ python3.6 -m pip -V
 
 echo " install dependencies"
 python3.6 -m pip install websockets --user
-echo "==========installation completed==========================="
+echo "==========python installation completed==========================="
 exit 0
