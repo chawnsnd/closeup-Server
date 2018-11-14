@@ -127,6 +127,7 @@ def query_square_bound_and_keyword(people_chosen,keyWord):
         minLat = min(person['lat'],minLat)
         maxLon = max(person['lon'],maxLon)
         minLon = min(person['lon'],minLon)
+  
     queryKeyWord = {"$or":[{"upperBizName":{"$regex":keyWord}},
                     {"middleBizName":{"$regex":keyWord}},
                     {"lowerBizName":{"$regex":keyWord}},
@@ -140,7 +141,7 @@ def query_square_bound_and_keyword(people_chosen,keyWord):
                     ]}
     queryBound = {"lat":{"$gt":minLat, "$lt":maxLat},"lon":{"$gt":minLon,"$lt":maxLon}}
     # result = dumps({"type":"query_square_bound","response":mycol.find(myquery)})
-    result = mycol.find({"$and",[queryKeyWord,queryBound]})
+    result = mycol.find({"$and":[queryKeyWord,queryBound]})
     return result
 
 def doAlgo(peopleList, poisList):
@@ -148,9 +149,7 @@ def doAlgo(peopleList, poisList):
     return recommendList
 
 def recommend_api(people,keyWord):
-    boundCollection =query_square_bound(people)
-
-    query_poisList = list(query_pois(keyWord,boundCollection))
     peopleList = list(people)
+    query_poisList = list(query_square_bound_and_keyword(people,keyWord))
     recommendation = doAlgo(peopleList,query_poisList)
     return recommendation
