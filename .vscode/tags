@@ -1,0 +1,111 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+LONLAT	../close-up-server-local.py	/^LONLAT = {'a_lonlat': None, 'b_lonlat': None}$/;"	kind:variable	line:16
+LONLAT	../close-up-server.py	/^LONLAT = {'a_lonlat': None, 'b_lonlat': None}$/;"	kind:variable	line:16
+LONLAT	../json-synchronized-Server/sampleServer-for-local-test-closeup.py	/^LONLAT = {'a_lonlat':None, 'b_lonlat':None}$/;"	kind:variable	line:14
+STATE	../close-up-server-local.py	/^STATE = {'value': 0}$/;"	kind:variable	line:15
+STATE	../close-up-server.py	/^STATE = {'value': 0}$/;"	kind:variable	line:15
+STATE	../json-synchronized-Server/sampleServer-for-local-test-closeup.py	/^STATE = {'value': 0}$/;"	kind:variable	line:13
+STATE	../json-synchronized-Server/sampleServer-for-local-test-demo.py	/^STATE = {'value': 0}$/;"	kind:variable	line:12
+STATE	../json-synchronized-Server/sampleServer.py	/^STATE = {'value': 0}$/;"	kind:variable	line:12
+STATE	../obsolete/sampleServer.py	/^STATE = {'value': 0}$/;"	kind:variable	line:12
+USERS	../close-up-server-local.py	/^USERS = set()$/;"	kind:variable	line:17
+USERS	../close-up-server.py	/^USERS = set()$/;"	kind:variable	line:17
+USERS	../json-synchronized-Server/sampleServer-for-local-test-closeup.py	/^USERS = set()$/;"	kind:variable	line:15
+USERS	../json-synchronized-Server/sampleServer-for-local-test-demo.py	/^USERS = set()$/;"	kind:variable	line:14
+USERS	../json-synchronized-Server/sampleServer.py	/^USERS = set()$/;"	kind:variable	line:14
+USERS	../obsolete/sampleServer.py	/^USERS = set()$/;"	kind:variable	line:14
+__init__	../algorithmModule.py	/^    def __init__(self):$/;"	kind:member	line:25
+algorithmModule.py	../algorithmModule.py	1;"	kind:file	line:1
+close-up-server (for local test).py	../close-up-server (for local test).py	1;"	kind:file	line:1
+close-up-server-local.py	../close-up-server-local.py	1;"	kind:file	line:1
+close-up-server.py	../close-up-server.py	1;"	kind:file	line:1
+close-up-server.py	../obsolete/close-up-server.py	1;"	kind:file	line:1
+compare_with_datasets	../algorithmModule.py	/^    def compare_with_datasets(self, datasets):$/;"	kind:member	line:172
+convert_distance_weights	../algorithmModule.py	/^    def convert_distance_weights(self, weights, earn_weights):$/;"	kind:member	line:126
+convert_starPoint_weights	../algorithmModule.py	/^    def convert_starPoint_weights(self, weights, earn_weights):$/;"	kind:member	line:106
+counter	../json-synchronized-Server/sampleServer-for-local-test-closeup.py	/^async def counter(websocket, path):$/;"	kind:function	line:48
+counter	../json-synchronized-Server/sampleServer-for-local-test-demo.py	/^async def counter(websocket, path):$/;"	kind:function	line:47
+counter	../json-synchronized-Server/sampleServer.py	/^async def counter(websocket, path):$/;"	kind:function	line:47
+counter	../obsolete/sampleServer.py	/^async def counter(websocket, path):$/;"	kind:function	line:47
+dblist	../close-up-server-local.py	/^dblist = myclient.list_database_names()$/;"	kind:variable	line:26
+dblist	../close-up-server.py	/^dblist = myclient.list_database_names()$/;"	kind:variable	line:26
+decision_datasets	../algorithmModule.py	/^    def decision_datasets(self, datasets):$/;"	kind:member	line:180
+distance_normalizer	../algorithmModule.py	/^    def distance_normalizer(self, source_data, target_data):$/;"	kind:member	line:165
+get_rank_weights	../algorithmModule.py	/^    def get_rank_weights(self, data):$/;"	kind:member	line:135
+get_weights	../algorithmModule.py	/^    def get_weights(self):$/;"	kind:member	line:55
+hello	../close-up-server (for local test).py	/^async def hello(websocket,path):$/;"	kind:function	line:7
+hello	../obsolete/close-up-server.py	/^async def hello(websocket,path):$/;"	kind:function	line:7
+hello	../sampleClient/sampleclient-for-local-test.py	/^async def hello():$/;"	kind:function	line:7
+hello	../sampleClient/sampleclient.py	/^async def hello():$/;"	kind:function	line:7
+insert_pois	../close-up-server-local.py	/^def insert_pois(pois,category):$/;"	kind:function	line:38
+insert_pois	../close-up-server.py	/^def insert_pois(pois,categories):$/;"	kind:function	line:49
+json_converter	../algorithmModule.py	/^    def json_converter(self, json_data):$/;"	kind:member	line:29
+json_dummy_init	../algorithmModule.py	/^    def json_dummy_init(self):$/;"	kind:member	line:42
+json_test	../algorithmModule.py	/^json_test = recommend()$/;"	kind:variable	line:197
+kmean_clustering	../algorithmModule.py	/^    def kmean_clustering(self, parameter, datasets):$/;"	kind:member	line:151
+myclient	../close-up-server-local.py	/^myclient = pymongo.MongoClient("mongodb:\/\/localhost:27017\/")$/;"	kind:variable	line:20
+myclient	../close-up-server.py	/^myclient = pymongo.MongoClient("mongodb:\/\/localhost:27017\/")$/;"	kind:variable	line:20
+mycol	../close-up-server-local.py	/^mycol = mydb["TestPoisCollection"]$/;"	kind:variable	line:22
+mycol	../close-up-server.py	/^mycol = mydb["TestPoisCollection"]$/;"	kind:variable	line:22
+mydb	../close-up-server-local.py	/^mydb = myclient["CloseUpDB"]$/;"	kind:variable	line:21
+mydb	../close-up-server.py	/^mydb = myclient["CloseUpDB"]$/;"	kind:variable	line:21
+notify_state	../close-up-server-local.py	/^async def notify_state(squareBound):$/;"	kind:function	line:112
+notify_state	../close-up-server.py	/^async def notify_state(message):$/;"	kind:function	line:32
+notify_state	../json-synchronized-Server/sampleServer-for-local-test-closeup.py	/^async def notify_state():$/;"	kind:function	line:26
+notify_state	../json-synchronized-Server/sampleServer-for-local-test-demo.py	/^async def notify_state():$/;"	kind:function	line:25
+notify_state	../json-synchronized-Server/sampleServer.py	/^async def notify_state():$/;"	kind:function	line:25
+notify_state	../obsolete/sampleServer.py	/^async def notify_state():$/;"	kind:function	line:25
+notify_users	../json-synchronized-Server/sampleServer-for-local-test-closeup.py	/^async def notify_users():$/;"	kind:function	line:32
+notify_users	../json-synchronized-Server/sampleServer-for-local-test-demo.py	/^async def notify_users():$/;"	kind:function	line:31
+notify_users	../json-synchronized-Server/sampleServer.py	/^async def notify_users():$/;"	kind:function	line:31
+notify_users	../obsolete/sampleServer.py	/^async def notify_users():$/;"	kind:function	line:31
+overlap_remove	../algorithmModule.py	/^    def overlap_remove(self):$/;"	kind:member	line:185
+query_poi	../close-up-server-local.py	/^def query_poi(id):$/;"	kind:function	line:81
+query_poi	../close-up-server.py	/^def query_poi(id):$/;"	kind:function	line:135
+query_pois	../close-up-server-local.py	/^def query_pois(keyWord,col):$/;"	kind:function	line:54
+query_pois	../close-up-server.py	/^def query_pois(keyWord,col):$/;"	kind:function	line:84
+query_pois_all	../close-up-server-local.py	/^def query_pois_all(keyWord):$/;"	kind:function	line:98
+query_pois_all	../close-up-server.py	/^def query_pois_all(keyWord):$/;"	kind:function	line:160
+query_square_bound	../close-up-server-local.py	/^def query_square_bound(squareBound):$/;"	kind:function	line:87
+query_square_bound	../close-up-server.py	/^def query_square_bound(people_chosen):$/;"	kind:function	line:141
+recommend	../algorithmModule.py	/^class recommend:$/;"	kind:class	line:24
+register	../close-up-server-local.py	/^async def register(websocket):$/;"	kind:function	line:118
+register	../close-up-server.py	/^async def register(websocket):$/;"	kind:function	line:36
+register	../json-synchronized-Server/sampleServer-for-local-test-closeup.py	/^async def register(websocket):$/;"	kind:function	line:38
+register	../json-synchronized-Server/sampleServer-for-local-test-demo.py	/^async def register(websocket):$/;"	kind:function	line:37
+register	../json-synchronized-Server/sampleServer.py	/^async def register(websocket):$/;"	kind:function	line:37
+register	../obsolete/sampleServer.py	/^async def register(websocket):$/;"	kind:function	line:37
+route_distance	../algorithmModule.py	/^    def route_distance(self, lat1, lon1, lat2, lon2):$/;"	kind:member	line:88
+sampleServer-for-local-test-closeup.py	../json-synchronized-Server/sampleServer-for-local-test-closeup.py	1;"	kind:file	line:1
+sampleServer-for-local-test-demo.py	../json-synchronized-Server/sampleServer-for-local-test-demo.py	1;"	kind:file	line:1
+sampleServer.py	../json-synchronized-Server/sampleServer.py	1;"	kind:file	line:1
+sampleServer.py	../obsolete/sampleServer.py	1;"	kind:file	line:1
+sampleclient-for-local-test.py	../sampleClient/sampleclient-for-local-test.py	1;"	kind:file	line:1
+sampleclient.py	../sampleClient/sampleclient.py	1;"	kind:file	line:1
+scatter	../algorithmModule.py	/^    def scatter(self, datasets, predict):$/;"	kind:member	line:162
+send_Info	../algorithmModule.py	/^    def send_Info(self):$/;"	kind:member	line:191
+serve_api	../close-up-server-local.py	/^async def serve_api(websocket, path):$/;"	kind:function	line:124
+serve_api	../close-up-server.py	/^async def serve_api(websocket, path):$/;"	kind:function	line:171
+start_server	../close-up-server (for local test).py	/^start_server = websockets.serve(hello,'localhost',49152)$/;"	kind:variable	line:16
+start_server	../obsolete/close-up-server.py	/^start_server = websockets.serve(hello,'localhost',6789)$/;"	kind:variable	line:17
+state_event	../json-synchronized-Server/sampleServer-for-local-test-closeup.py	/^def state_event():$/;"	kind:function	line:18
+state_event	../json-synchronized-Server/sampleServer-for-local-test-demo.py	/^def state_event():$/;"	kind:function	line:17
+state_event	../json-synchronized-Server/sampleServer.py	/^def state_event():$/;"	kind:function	line:17
+state_event	../obsolete/sampleServer.py	/^def state_event():$/;"	kind:function	line:17
+unregister	../close-up-server-local.py	/^async def unregister(websocket):$/;"	kind:function	line:121
+unregister	../close-up-server.py	/^async def unregister(websocket):$/;"	kind:function	line:40
+unregister	../json-synchronized-Server/sampleServer-for-local-test-closeup.py	/^async def unregister(websocket):$/;"	kind:function	line:43
+unregister	../json-synchronized-Server/sampleServer-for-local-test-demo.py	/^async def unregister(websocket):$/;"	kind:function	line:42
+unregister	../json-synchronized-Server/sampleServer.py	/^async def unregister(websocket):$/;"	kind:function	line:42
+unregister	../obsolete/sampleServer.py	/^async def unregister(websocket):$/;"	kind:function	line:42
+update_star	../close-up-server-local.py	/^def update_star(id,starPoint):$/;"	kind:function	line:64
+update_star	../close-up-server.py	/^def update_star(id,starPoint):$/;"	kind:function	line:112
+users_event	../json-synchronized-Server/sampleServer-for-local-test-closeup.py	/^def users_event():$/;"	kind:function	line:22
+users_event	../json-synchronized-Server/sampleServer-for-local-test-demo.py	/^def users_event():$/;"	kind:function	line:21
+users_event	../json-synchronized-Server/sampleServer.py	/^def users_event():$/;"	kind:function	line:21
+users_event	../obsolete/sampleServer.py	/^def users_event():$/;"	kind:function	line:21
