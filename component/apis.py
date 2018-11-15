@@ -144,11 +144,12 @@ def query_square_bound_and_keyword(people_chosen,keyWord):
                     ]}
     queryBound = {"lat":{"$gt":minLat, "$lt":maxLat},"lon":{"$gt":minLon,"$lt":maxLon}}
     # result = dumps({"type":"query_square_bound","response":mycol.find(myquery)})
-    result = mycol.find({"$and":[queryKeyWord,queryBound]})
+    result = mycol.find({"$and":[queryKeyWord,queryBound]}).limit(5)
     return result
 
 def doAlgo(peopleList, poisList):
     recommendList = poisList
+    # recommendList['score'] = 100
     return recommendList
 
 def recommend_api(people,keyWord):
