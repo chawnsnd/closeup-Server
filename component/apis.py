@@ -8,6 +8,7 @@ import logging
 import websockets
 import pymongo
 import sys
+import random
 from bson.json_util import dumps
 
 myclient = pymongo.MongoClient("mongodb://localhost:27017/")
@@ -144,12 +145,15 @@ def query_square_bound_and_keyword(people_chosen,keyWord):
                     ]}
     queryBound = {"lat":{"$gt":minLat, "$lt":maxLat},"lon":{"$gt":minLon,"$lt":maxLon}}
     # result = dumps({"type":"query_square_bound","response":mycol.find(myquery)})
-    result = mycol.find({"$and":[queryKeyWord,queryBound]}).limit(5)
+    result = mycol.find({"$and":[queryKeyWord,queryBound]})
     return result
-
+ 
 def doAlgo(peopleList, poisList):
     recommendList = poisList
     # recommendList['score'] = 100
+    sizeList = len(recommendList)
+    sparsity = random.randint(sizeList//6,sizeList//5)
+    recommendList = recommendList[::sparsity]
     return recommendList
 
 def recommend_api(people,keyWord):
