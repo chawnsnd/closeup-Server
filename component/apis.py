@@ -9,6 +9,7 @@ import websockets
 import pymongo
 import sys
 from bson.json_util import dumps
+from algorithm.Recommend_System_div_ver import recommend_system
 
 myclient = pymongo.MongoClient("mongodb://localhost:27017/")
 mydb = myclient["CloseUpDB"]
@@ -147,12 +148,9 @@ def query_square_bound_and_keyword(people_chosen,keyWord):
     result = mycol.find({"$and":[queryKeyWord,queryBound]})
     return result
 
-def doAlgo(peopleList, poisList):
-    recommendList = poisList
-    return recommendList
 
 def recommend_api(people,keyWord):
     peopleList = list(people)
     query_poisList = list(query_square_bound_and_keyword(people,keyWord))
-    recommendation = doAlgo(peopleList,query_poisList)
+    recommendation = recommend_system(peopleList,query_poisList)
     return recommendation

@@ -78,6 +78,6 @@ async def serve_api(websocket, path):
     finally:
         await unregister(websocket)
 
-# asyncio.get_event_loop().run_until_complete(websockets.serve(serve_api, 'ec2-13-59-71-223.us-east-2.compute.amazonaws.com', 49152))
+# asyncio.get_event_loop().run_until_complete(websockets.serve(serve_api, 'ec2-13-125-249-233.ap-northeast-2.compute.amazonaws.com', 49152))
 asyncio.get_event_loop().run_until_complete(websockets.serve(serve_api, 'localhost', 49152))
 asyncio.get_event_loop().run_forever()
