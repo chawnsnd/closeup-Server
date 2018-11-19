@@ -31,14 +31,16 @@ def json_dataset_converter(datasets):
     Category = list()
     Star = list()
     ID_list = list()
-    
+    image_list = list()
     for lists in datasets:     
         parsing_Name = lists["name"]         
         parsing_Lat = lists["lat"]
         parsing_Lon = lists["lon"]
+        parsing_Img = lists["image"]
         # parsing_Category = lists["categories"]
         parsing_Star = lists["starPoint"]
-        parsing_ID = lists["_id"]
+        parsing_ID = lists["id"]
+        image_list.append(parsing_Img)
         Name_list.append(parsing_Name)
         Lat.append(parsing_Lat)
         Lon.append(parsing_Lon)
@@ -50,7 +52,7 @@ def json_dataset_converter(datasets):
     data_nb = len(Lat)
     #parsing_rest = data['Restaurant']
     
-    return  Name_list, Lat, Lon, Category, Star, ID_list, dataset_weights, datasets, data_nb
+    return  image_list,Name_list, Lat, Lon, Category, Star, ID_list, dataset_weights, datasets, data_nb
 
 def json_people_converter(datasets):
     print("Earn People Datasets Process Init")
@@ -165,7 +167,7 @@ def get_rank_of_decision( weight, datasets, decision_index, isOver, parameter):
         
     return datasets, rank_list
 
-def Convert_Info(name_list, weight ,Ranked, Lat, Lon, Category, Star, ID):
+def Convert_Info(image_list,name_list, weight ,Ranked, Lat, Lon, Category, Star, ID):
     print("DATA Convert INITIALIZE")
     dict_list = list()
     for index in Ranked:
@@ -175,9 +177,9 @@ def Convert_Info(name_list, weight ,Ranked, Lat, Lon, Category, Star, ID):
         parsing_dict["lon"] = Lon[index]
         # parsing_dict["categoris"] = Category[index]
         parsing_dict["starPoint"] = Star[index]
-        parsing_dict["_id"] = ID[index]
+        parsing_dict["id"] = ID[index]
         parsing_dict["weight"] = weight[0,index]
-        
+        parsing_dict["image"] = image_list[0,index]
         dict_list.append(parsing_dict)
     
     return dict_list
@@ -203,7 +205,7 @@ def recommend_system(people_datasets, earn_datasets):
     mens = people_datasets
     
     # list Data convert To Decision datasets
-    Name_list, lat, lon, category, star, id_list, weights , data, data_nb= json_dataset_converter(data)
+    image_list, Name_list, lat, lon, category, star, id_list, weights , data, data_nb= json_dataset_converter(data)
     men_lat, men_lon, mens, people_nb = json_people_converter(mens)
     
     # Data Vectorized for Algorithm
@@ -335,6 +337,6 @@ def recommend_system(people_datasets, earn_datasets):
                                                         datasets=decision_people_arr,isOver=True, parameter=PARAMETER_FOR_DECISION) 
     
     # Convert decision datasets to list
-    decision = Convert_Info(name_list=Name_list ,weight= weight_decision ,Ranked=rank_list ,Lat=lat ,Lon=lon ,Category=category ,Star=star ,ID=id_list)
+    decision = Convert_Info(image_list = image_list , name_list=Name_list ,weight= weight_decision ,Ranked=rank_list ,Lat=lat ,Lon=lon ,Category=category ,Star=star ,ID=id_list)
     
     return decision
