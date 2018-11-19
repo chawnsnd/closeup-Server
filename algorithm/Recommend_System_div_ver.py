@@ -194,10 +194,10 @@ def recommend_system(people_datasets, earn_datasets):
     '''
     
     print("Recommend System Init")
-    PARAMETER_FOR_KMEAN = 4
+    PARAMETER_FOR_KMEAN = 3
     PARAMETER_FOR_DIST = 0.825
     PARAMETER_FOR_STAR = 0.275
-    PARAMETER_FOR_DECISION = 10
+    PARAMETER_FOR_DECISION = 30
     
     data = earn_datasets
     mens = people_datasets
