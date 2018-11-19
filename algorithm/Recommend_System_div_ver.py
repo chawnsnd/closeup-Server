@@ -342,5 +342,12 @@ def recommend_system(people_datasets, earn_datasets):
     
     # Convert decision datasets to list
     decision = Convert_Info(telNo_list=telNo_list,image_list = image_list , name_list=Name_list ,weight= weight_decision ,Ranked=rank_list ,Lat=lat ,Lon=lon ,Category=category ,Star=star ,ID=id_list)
-    
+    maxDecisionWeight =0
+    for d in decision:
+        maxDecisionWeight = max(d['weight'],maxDecisionWeight)
+
+    for d in decision:
+        d['weight'] =int( d['weight']/maxDecisionWeight*100)
+        
+    decision.reverse()
     return decision
