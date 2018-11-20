@@ -5,13 +5,13 @@
 import asyncio
 import json
 import logging
-import websockets
+
+from flask import Flask, request, jsonify, Response
 import pymongo
 import sys
 from bson.json_util import dumps
 from component.apis import *
 
-logging.basicConfig()
 
 STATE = {'value': 0}
 LONLAT = {'a_lonlat': None, 'b_lonlat': None}
@@ -30,54 +30,42 @@ if "CloseUpDB" in dblist:
 else:
     print("NO DATABASE")
 
-
+app = Flask(__name__)
 # SAMPLE CODE
 # print(myclient.list_database_names())
 # collist = mydb.list_collection_names()
 # print(mycol.find_one())
 
-async def notify_state(message):
-    if USERS:       # asyncio.wait doesn't accept an empty list
-        await asyncio.wait([user.send(message) for user in USERS])
+@app.route("/pois", methods=["POST"])
+def insertPois():
+    req = request.json
+    res = insert_pois(req['pois'],req['categories'])
+    return jsonify(res)
 
-async def register(websocket):
-    print("Client Connected")
-    USERS.add(websocket)
+@app.route("/pois", methods=["GET"])
+def queryPois():
+    req = request.json
+    res = query_pois(req['keyWord'],req['count'],req['page'],mycol)
+    return jsonify(res)
 
-async def unregister(websocket):
-    print("Client disconnected")
-    USERS.remove(websocket)
+@app.route("/pois/{poiId}", methods=["PUT"])
+def updateStar():
+    req = request.json
+    res = update_star(req['id'],req['starPoint'])
+    return jsonify(res)
 
-async def serve_api(websocket, path):
-    global mycol
-    # register(websocket) sends user_event() to websocket
-    await register(websocket)
-    try:
-        # await websocket.send(query_square_bound())
-        async for message in websocket:
-            data = json.loads(message)
-            #do command
-            command = data['command']
-            if command == "connect()":
-                print("Client Connected")
-            elif command == "insert_pois":
-                await notify_state(insert_pois(data['pois'],data['categories']))
-            elif command =="query_square_bound":
-                await notify_state(dumps({"type":"query_square_bound","response":query_square_bound(data['people_chosen'])}))    
-            elif command =="query_poi":
-                await notify_state(dumps({"type":"query_poi","response":query_poi(data['id'])}))
-            elif command =="update_star":
-                await notify_state(update_star(data['id'],data['starPoint']))
-            elif command == "query_pois":
-                await notify_state(dumps({"type":"query_pois","response":query_pois(data['keyWord'],data['count'],data['page'],mycol)}))
-            elif command == "recommend_api":
-                await notify_state(dumps({"type":"recommend_api","response":recommend_api(data['people_chosen'],data['keyWord'])}))
-            elif command == "query_square_bound_and_keyword":
-                await notify_state(dumps({"type":"query_square_bound_and_keyword","response":query_square_bound_and_keyword(data['people_chosen'],data['keyWord'])}))            
-            
-    finally:
-        await unregister(websocket)
+@app.route("/pois/{poiId}", methods=["GET"])
+def insertPois():
+    req = request.json
+    res = query_poi(req['id'])
+    return jsonify(res)
+@app.route("/recommendPois", methods=["GET"])
+def insertPois():
+    req = request.json
+    res = insert_pois(req['pois'],req['categories'])
+    return jsonify(res)
 
-# asyncio.get_event_loop().run_until_complete(websockets.serve(serve_api, 'ec2-13-125-249-233.ap-northeast-2.compute.amazonaws.com', 49152))
-asyncio.get_event_loop().run_until_complete(websockets.serve(serve_api, 'localhost', 49152))
-asyncio.get_event_loop().run_forever()
+if __name__ == '__main__':
+    app.secret_key = 'super secret key'
+
+    app.run(host='ec2-13-125-180-243.ap-northeast-2.compute.amazonaws.com',port=5000)
