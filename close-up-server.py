@@ -55,7 +55,7 @@ def updateStar():
     return jsonify(res)
 
 @app.route("/pois/{poiId}", methods=["GET"])
-def insertPois():
+def getPoi():
     req = request.json
     res = query_poi(req['id'])
     return jsonify(res)
@@ -66,6 +66,5 @@ def insertPois():
     return jsonify(res)
 
 if __name__ == '__main__':
-    app.secret_key = 'super secret key'
 
-    app.run(host='ec2-13-125-180-243.ap-northeast-2.compute.amazonaws.com',port=5000)
+    app.run(host='ec2-13-125-249-233.ap-northeast-2.compute.amazonaws.com',port=5000)
