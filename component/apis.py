@@ -20,7 +20,7 @@ def insert_pois(pois,categories):
 
     if pois is None:
         print("Failed (no pois)")
-        return dumps({"type":"insert_pois","response":"insertion/update fail"})
+        return {"type":"insert_pois","response":"insertion/update fail"}
 
 
     for poi in pois:
@@ -47,7 +47,7 @@ def insert_pois(pois,categories):
         mycol.insert(poi)
 
     print("insertion/update complete")
-    return dumps({"type":"insert_pois","response":"insertion/update success"})
+    return {"type":"insert_pois","response":"insertion/update success"}
 
 
 def query_pois(keyWord, count, page, col):
@@ -85,19 +85,18 @@ def update_star(id,starPoint):
         starPoint /=starCount
         print("star updated existing")
     else :
-        return dumps({"type":"update_star","response":"update failed"})
+        return {"type":"update_star","response":"update failed"}
     
     setStar = {"$set" : {"starPoint":starPoint,"starCount":starCount}}
     mycol.update_one(criteria,setStar)
-    return dumps({"type":"starPoint", "response":"update successed"})
+    return {"type":"starPoint", "response":"update successed"}
     # print("star is not updated/ nothing to update")
     # return dumps({"type":"update_star","response":"nothing updated"})
 
 def query_poi(id):
     global mycol
     query = {"id":id}
-    poi = mycol.find(query).limit(1)
-    return dumps({"type":"query_poi","response":poi})
+    return mycol.find(query).limit(1)[0]
 
 def query_square_bound(people_chosen):
     global mycol
@@ -114,7 +113,6 @@ def query_square_bound(people_chosen):
         minLon = min(person['lon'],minLon)
 
     myquery = {"lat":{"$gt":minLat, "$lt":maxLat},"lon":{"$gt":minLon,"$lt":maxLon}}
-    # result = dumps({"type":"query_square_bound","response":mycol.find(myquery)})
     result = mycol.find(myquery)
     return result
 

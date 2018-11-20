@@ -12,16 +12,10 @@ import sys
 from bson.json_util import dumps
 from component.apis import *
 
-
-STATE = {'value': 0}
-LONLAT = {'a_lonlat': None, 'b_lonlat': None}
-USERS = set()
-
 # START DB
 myclient = pymongo.MongoClient("mongodb://localhost:27017/")
 mydb = myclient["CloseUpDB"]
 mycol = mydb["TestPoisCollection"]
-
 
 # CHECK DB CONNECTION
 dblist = myclient.list_database_names()
@@ -39,23 +33,22 @@ def insertPois():
     res = insert_pois(req['pois'],req['categories'])
     return jsonify(res)
 
-@app.route("/pois", methods=["GET"])
-def queryPois():
-    req = request.json
-    res = query_pois(req['keyWord'],req['count'],req['page'],mycol)
+
+@app.route("/pois/<keyWord>/<count>/<page>", methods=["GET"])
+def getPois(keyWord,count,page):
+    res = query_pois(keyWord,count,page,mycol)
     return jsonify(res)
 
-@app.route("/pois/{poiId}", methods=["PUT"])
-def updateStar():
-    req = request.json
-    res = update_star(req['id'],req['starPoint'])
+@app.route("/pois/<poiId>/<starPoint>", methods=["PUT"])
+def updateStar(poiId,starPoint):
+    res = update_star(poiId,starPoint)
     return jsonify(res)
 
-@app.route("/pois/{poiId}", methods=["GET"])
-def getPoi():
-    req = request.json
-    res = query_poi(req['id'])
+@app.route("/pois/<poiId>", methods=["GET"])
+def getPoi(poiId):
+    res = query_poi(poiId)
     return jsonify(res)
+
 @app.route("/recommendPois", methods=["GET"])
 def recommendPois():
     req = request.json
@@ -63,5 +56,5 @@ def recommendPois():
     return jsonify(res)
 
 if __name__ == '__main__':
-    app.run(host='ec2-13-125-249-233.ap-northeast-2.compute.amazonaws.com',port=5000)
-    # app.run(host='localhost',port=5000)
+    # app.run(host='ec2-13-125-249-233.ap-northeast-2.compute.amazonaws.com',port=5000)
+    app.run(host='localhost',port=5000)
