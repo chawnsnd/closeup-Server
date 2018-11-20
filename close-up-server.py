@@ -31,10 +31,7 @@ else:
     print("NO DATABASE")
 
 app = Flask(__name__)
-# SAMPLE CODE
-# print(myclient.list_database_names())
-# collist = mydb.list_collection_names()
-# print(mycol.find_one())
+
 
 @app.route("/pois", methods=["POST"])
 def insertPois():
@@ -60,11 +57,11 @@ def getPoi():
     res = query_poi(req['id'])
     return jsonify(res)
 @app.route("/recommendPois", methods=["GET"])
-def insertPois():
+def recommendPois():
     req = request.json
-    res = insert_pois(req['pois'],req['categories'])
+    res = recommend_api(req['people_chosen'],req['keyWord'])
     return jsonify(res)
 
 if __name__ == '__main__':
-
     app.run(host='ec2-13-125-249-233.ap-northeast-2.compute.amazonaws.com',port=5000)
+    # app.run(host='localhost',port=5000)
