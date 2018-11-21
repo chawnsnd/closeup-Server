@@ -57,7 +57,7 @@ def updateStar(poiId):
 @app.route("/api/pois/<poiId>", methods=["GET"])
 def getPoi(poiId):
     res = query_poi(poiId)
-    return jsonify(res)
+    return dumps(res)
 
 @app.route("/api/recommendPois", methods=["GET"])
 def recommendPois():
