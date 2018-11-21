@@ -67,7 +67,7 @@ def query_pois(keyWord, count, page, col):
     totalCount = col.count(query)
     result = col.find(query).skip(skips).limit(count)  #return cursor
     returnResult = {"pois": result, "totalCount": totalCount}
-    return returnResult
+    return dumps(returnResult)
 
 
 def update_star(id,starPoint):

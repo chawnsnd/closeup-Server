@@ -36,14 +36,17 @@ else:
 def insertPois():
     req = request.json
     res = insert_pois(req['pois'],req['categories'])
-    return jsonify(res)
+    return dumps(res)
 
 
 @app.route("/api/pois", methods=["GET"])
 def getPois():
-    req = request.json
-    res = query_pois(req['keyWord'],req['count'],req['page'],mycol)
-    return jsonify(res)
+    keyWord = request.args.get('keyWord')
+    count = int(request.args.get('count'))
+    page = int(request.args.get('page'))
+
+    res = query_pois(keyWord,count,page,mycol)
+    return res
 
 @app.route("/api/pois/<poiId>/<starPoint>", methods=["PUT"])
 def updateStar(poiId,starPoint):
