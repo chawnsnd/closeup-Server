@@ -60,9 +60,10 @@ def getPoi(poiId):
 
 @app.route("/api/recommendPois", methods=["GET"])
 def recommendPois():
-    req = request.json
-    res = recommend_api(req['people_chosen'],req['keyWord'])
-    return jsonify(res)
+    keyWord = request.args.get('keyWord')
+    people_chosen = request.args.get('people_chosen')
+    res = recommend_api(people_chosen,keyWord)
+    return dumps(res)
 
 if __name__ == '__main__':
     # app.run(host='ec2-13-125-249-233.ap-northeast-2.compute.amazonaws.com',port=5000)
