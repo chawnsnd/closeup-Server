@@ -65,7 +65,7 @@ def recommendPois():
     newPeople  = list()
     for person in people_chosen:
         newPeople.append(literal_eval(person))
-    res = recommend_api(people_chosen,keyWord)
+    res = recommend_api(newPeople,keyWord)
     return dumps(res)
 
 if __name__ == '__main__':
