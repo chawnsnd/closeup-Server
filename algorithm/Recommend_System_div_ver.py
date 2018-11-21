@@ -128,7 +128,7 @@ def get_starPoint_weights(weights, earn_weights):
     weights_sum = 0
     for index in range(len(earn_weights)):
         if earn_weights[index] == 0:
-            earn_weights[index] = 1
+            earn_weights[index] = 0
         weights_sum = weights_sum + earn_weights[index]
     
     weights_mean = weights_sum / len(earn_weights)
@@ -139,7 +139,7 @@ def get_starPoint_weights(weights, earn_weights):
         if earn_weights[index] == 0:
             weights[:,index] = (weights[:, index] * weights_mean)/(1 + (weights[:, index] * weights_mean)) #* parameter
         else:
-        weights[:, index] = (weights[:, index] * earn_weights[index])/ (1 + (weights[:, index] * earn_weights[index])) #* parameter
+            weights[:, index] = (weights[:, index] * earn_weights[index])/ (1 + (weights[:, index] * earn_weights[index])) #* parameter
     
     return weights
 
