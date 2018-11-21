@@ -350,4 +350,4 @@ def recommend_system(people_datasets, earn_datasets):
         d['weight'] =int( d['weight']/maxDecisionWeight*100)
         
     decision.reverse()
-    return decision
+    return decision 

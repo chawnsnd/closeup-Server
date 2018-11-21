@@ -99,6 +99,13 @@ def query_poi(id):
     poi = mycol.find(query).limit(1)
     return dumps({"type":"query_poi","response":poi})
 
+
+def query_poi_temp(id):
+    global mycol
+    query = {"id":id}
+    poi = mycol.find(query).limit(1)[0]
+    return poi
+
 def query_square_bound(people_chosen):
     global mycol
     maxLat = 0
@@ -153,4 +160,10 @@ def recommend_api(people,keyWord):
     peopleList = list(people)
     query_poisList = list(query_square_bound_and_keyword(people,keyWord))
     recommendation = recommend_system(peopleList,query_poisList)
-    return recommendation
+    pois = []
+    for r in recommendation :
+        poi = {}
+        poi = query_poi_temp(r['id'])
+        poi['weight'] = r['weight']
+        pois.append(poi)
+    return pois
