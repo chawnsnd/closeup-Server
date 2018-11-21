@@ -151,4 +151,10 @@ def recommend_api(people,keyWord):
     peopleList = list(people)
     query_poisList = list(query_square_bound_and_keyword(people,keyWord))
     recommendation = recommend_system(peopleList,query_poisList)
-    return recommendation
+    pois = []
+    for r in recommendation :
+        poi = {}
+        poi = query_poi_temp(r['id'])
+        poi['weight'] = r['weight']
+        pois.append(poi)
+    return pois
