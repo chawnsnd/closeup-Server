@@ -5,7 +5,7 @@
 import asyncio
 import json
 import logging
-
+from ast import literal_eval
 from flask import Flask, request, jsonify, Response
 import pymongo
 import sys
@@ -61,7 +61,10 @@ def getPoi(poiId):
 @app.route("/api/recommendPois", methods=["GET"])
 def recommendPois():
     keyWord = request.args.get('keyWord')
-    people_chosen = request.args.get('people_chosen')
+    people_chosen = request.args.getlist('people_chosen[]')
+    newPeople  = list()
+    for person in people_chosen:
+        newPeople.append(literal_eval(person))
     res = recommend_api(people_chosen,keyWord)
     return dumps(res)
 
