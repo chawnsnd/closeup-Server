@@ -48,9 +48,10 @@ def getPois():
     res = query_pois(keyWord,count,page,mycol)
     return res
 
-@app.route("/api/pois/<poiId>/<starPoint>", methods=["PUT"])
-def updateStar(poiId,starPoint):
-    res = update_star(poiId,starPoint)
+@app.route("/api/pois/<poiId>", methods=["PUT"])
+def updateStar(poiId):
+    req = request.json
+    res = update_star(poiId,req['starPoint'])
     return jsonify(res)
 
 @app.route("/api/pois/<poiId>", methods=["GET"])
