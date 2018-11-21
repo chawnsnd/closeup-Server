@@ -115,6 +115,11 @@ def query_square_bound(people_chosen):
     myquery = {"lat":{"$gt":minLat, "$lt":maxLat},"lon":{"$gt":minLon,"$lt":maxLon}}
     result = mycol.find(myquery)
     return result
+def query_poi_temp(id):
+    global mycol
+    query = {"id":id}
+    poi = mycol.find(query).limit(1)[0]
+    return poi
 
 def query_square_bound_and_keyword(people_chosen,keyWord):
     global mycol
