@@ -149,8 +149,8 @@ def decision_datasets(datasets, star_weights, star_parameter):
     drow, dcol = datasets.shape
     result_datasets = np.zeros((drow,dcol))
     for index in range(dcol):
-        if star_weights[0,index] != 0:
-            star_weights[0,index] = (1 - star_weights[0,index]) * star_parameter
+        #if star_weights[0,index] != 0:
+        star_weights[0,index] = (1 - star_weights[0,index]) * star_parameter
         result_datasets[0,index] = datasets[0,index] * star_weights[0,index]
    
     return result_datasets
@@ -347,7 +347,6 @@ def recommend_system(people_datasets, earn_datasets):
         maxDecisionWeight = max(d['weight'],maxDecisionWeight)
 
     for d in decision:
-        d['weight'] =int( d['weight']/maxDecisionWeight*100)
+        d['weight'] =100-int( d['weight']/maxDecisionWeight*100)
         
-    decision.reverse()
     return decision
