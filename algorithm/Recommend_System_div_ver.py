@@ -348,5 +348,10 @@ def recommend_system(people_datasets, earn_datasets):
 
     for d in decision:
         d['weight'] =100-int( d['weight']/maxDecisionWeight*100)
-        
+
+    for d in decision:
+        maxDecisionWeight = max(d['weight'],maxDecisionWeight)
+
+    for d in decision:
+        d['weight'] =int( d['weight']/maxDecisionWeight*100)     
     return decision
