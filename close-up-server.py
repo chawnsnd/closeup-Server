@@ -70,5 +70,5 @@ def recommendPois():
     return dumps(res)
 
 if __name__ == '__main__':
-    # app.run(host='ec2-13-125-249-233.ap-northeast-2.compute.amazonaws.com',port=5000)
-    app.run(host='localhost',port=5000)
+    app.run(host='ec2-13-125-249-233.ap-northeast-2.compute.amazonaws.com',port=5000)
+    #app.run(host='localhost',port=5000)
