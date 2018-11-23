@@ -154,8 +154,28 @@ def query_square_bound_and_keyword(people_chosen,keyWord):
 
 def recommend_api(people,keyWord):
     peopleList = list(people)
+    sumLat, sumLon = 0,0
+    for person in peopleList:
+        sumLat += person['lat']
+        sumLon += person['lon']
+    midLat = sumLat/len(peopleList)
+    midLon = sumLon/len(peopleList)
+    
+    avgDistFromMid=0
+    sumDistFromMid=0
+    for person in peopleList:
+        sumDistFromMid +=(person['lat'] - midLat)**2 + (person['lon'] - midLon)**2
+    avgDistFromMid = sumDistFromMid/len(peopleList)
+        
     query_poisList = list(query_square_bound_and_keyword(people,keyWord))
-    recommendation = recommend_system(peopleList,query_poisList)
+    nearMidPlaces=[]
+    for poi in query_poisList:
+        if (poi['lat'] - midLat)**2 + (poi['lon'] - midLon)**2 < (avgDistFromMid/4):
+            nearMidPlaces.append(poi)
+
+    # sorted(query_poisList, key=lambda poi: (midLat- poi['lat'])**2 +(midLon -poi['lon'])**2)
+    
+    recommendation = recommend_system(peopleList,nearMidPlaces)
     pois = []
     for r in recommendation :
         poi = {}
