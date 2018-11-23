@@ -419,7 +419,7 @@ def recommend_system(people_datasets, earn_datasets):
         
     decision.reverse()
 
-    f=open('flow_datasets.csv','w')
+    f=open('flow_datasets.txt','w')
     f.write(str(dict_flow))
     f.close()
 

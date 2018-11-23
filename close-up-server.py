@@ -19,13 +19,13 @@ USERS = set()
 
 # START DB
 myclient = pymongo.MongoClient("mongodb://localhost:27017/")
-mydb = myclient["CloseUpDB"]
+mydb = myclient["CloseUpDB2"]
 mycol = mydb["TestPoisCollection"]
 
 
 # CHECK DB CONNECTION
 dblist = myclient.list_database_names()
-if "CloseUpDB" in dblist:
+if "CloseUpDB2" in dblist:
     print("CloseUpDB connected")
 else:
     print("NO DATABASE")
