@@ -158,6 +158,7 @@ def query_square_bound_and_keyword(people_chosen,keyWord):
 
 def recommend_api(people,keyWord):
     peopleList = list(people)
+    print(sum(people))
     query_poisList = list(query_square_bound_and_keyword(people,keyWord))
     recommendation = recommend_system(peopleList,query_poisList)
     pois = []

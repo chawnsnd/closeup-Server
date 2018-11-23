@@ -91,12 +91,13 @@ def get_clustering(parameter, datasets):
     plt.title('Elbow Method For Optimal k')
     plt.show()
     
-    #clustering = KMeans(n_clusters=parameter)
+    clustering = KMeans(n_clusters=parameter)
     clustering.fit(datasets)
     
     labels = clustering.predict(datasets)
-    centers = np.array(clustering_list[3].cluster_centers_)
-    #centers = np.array(clustering.cluster_centers_)
+    #decision_cluster = np.mean(clustering_list)
+    #centers = np.array(decision_cluster.cluster_centers_)
+    centers = np.array(clustering.cluster_centers_)
     
     #print("Datasets Labeling Completed : ",labels)
     #print("Centroids Data : ",clustering.cluster_centers_)
@@ -218,7 +219,7 @@ def recommend_system(people_datasets, earn_datasets):
     '''
     
     print("Recommend System Init")
-    PARAMETER_FOR_KMEAN = 3
+    PARAMETER_FOR_KMEAN = 4
     PARAMETER_FOR_DIST = 0.825
     PARAMETER_FOR_STAR = 0.275
     PARAMETER_FOR_DECISION = 30
