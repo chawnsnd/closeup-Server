@@ -5,68 +5,51 @@
 import asyncio
 import json
 import logging
-from ast import literal_eval
 from flask import Flask, request, jsonify, Response
 import pymongo
 import sys
 from bson.json_util import dumps
-from component.apis import *
 from flask_cors import CORS
+from dao.closeUpDao import insert_pois
+from service.closeUpService import updateStar, getPoi, getPois, recommendPois
 
 app = Flask(__name__)
 cors = CORS(app, resources={
   r"/*": {"origin": "*"},
 })
 
-# START DB
-myclient = pymongo.MongoClient("mongodb://localhost:27017/")
-mydb = myclient["CloseUpDB"]
-mycol = mydb["TestPoisCollection"]
-
-# CHECK DB CONNECTION
-dblist = myclient.list_database_names()
-if "CloseUpDB" in dblist:
-    print("CloseUpDB connected")
-else:
-    print("NO DATABASE")
-
-
 
 @app.route("/api/pois", methods=["POST"])
-def insertPois():
+def DBinsert():
     req = request.json
     res = insert_pois(req['pois'],req['categories'])
     return dumps(res)
 
 
 @app.route("/api/pois", methods=["GET"])
-def getPois():
+def pagination():
     keyWord = request.args.get('keyWord')
     count = int(request.args.get('count'))
     page = int(request.args.get('page'))
-
-    res = query_pois(keyWord,count,page,mycol)
+    res = getPois(keyWord,count,page)
     return res
 
 @app.route("/api/pois/<poiId>", methods=["PUT"])
-def updateStar(poiId):
+def starUpdate(poiId):
     req = request.json
-    res = update_star(poiId,req['starPoint'])
+    res = updateStar(poiId,req)
     return jsonify(res)
 
-@app.route("/api/pois/<poiId>", methods=["GET"])
-def getPoi(poiId):
-    res = query_poi(poiId)
-    return dumps(res)
+# @app.route("/api/pois/<poiId>", methods=["GET"])
+# def getPoi(poiId):
+#     res = query_poi(poiId)
+#     return dumps(res)
 
 @app.route("/api/recommendPois", methods=["GET"])
-def recommendPois():
+def recommendation():
     keyWord = request.args.get('keyWord')
     people_chosen = request.args.getlist('people_chosen[]')
-    newPeople  = list()
-    for person in people_chosen:
-        newPeople.append(literal_eval(person))
-    res = recommend_api(newPeople,keyWord)
+    res = recommendPois(keyWord,people_chosen)
     return dumps(res)
 
 if __name__ == '__main__':

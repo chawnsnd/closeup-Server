@@ -12,7 +12,6 @@ Created on Sun Nov 18 03:22:55 2018
 import numpy as np
 from math import sin, cos, asin, sqrt, atan2, radians
 from sklearn.cluster import KMeans
-import matplotlib.pyplot as plt
 
 def json_dataset_converter(datasets):
     print("Earn Datasets Process Init")
@@ -75,31 +74,15 @@ def json_people_converter(datasets):
 
 def get_clustering(parameter, datasets):
     print("K-Mean Clustering Init")
-    
-    Sum_of_squared_distances = []
-    clustering_list = list()
-    K = range(1,15)
-    for k in K:
-        clustering = KMeans(n_clusters=k)
-        clustering = clustering.fit(datasets)
-        Sum_of_squared_distances.append(clustering.inertia_)
-        clustering_list.append(clustering)
-    
-    plt.plot(K, Sum_of_squared_distances, 'bx-')
-    plt.xlabel('k')
-    plt.ylabel('Sum_of_squared_distances')
-    plt.title('Elbow Method For Optimal k')
-    plt.show()
-    
-    #clustering = KMeans(n_clusters=parameter)
+    clustering = KMeans(n_clusters=parameter)
     clustering.fit(datasets)
     
     labels = clustering.predict(datasets)
-    centers = np.array(clustering_list[3].cluster_centers_)
-    #centers = np.array(clustering.cluster_centers_)
+    centers = np.array(clustering.cluster_centers_)
     
-    #print("Datasets Labeling Completed : ",labels)
-    #print("Centroids Data : ",clustering.cluster_centers_)
+    print("Datasets Labeling Completed : ",labels)
+    print("Centroids Data : ",clustering.cluster_centers_)
+    
     return labels, centers
 
 def get_distance_each_value(lat1, lon1, lat2, lon2):
@@ -145,7 +128,7 @@ def get_starPoint_weights(weights, earn_weights):
     weights_sum = 0
     for index in range(len(earn_weights)):
         if earn_weights[index] == 0:
-            earn_weights[index] = 1
+            earn_weights[index] = 0
         weights_sum = weights_sum + earn_weights[index]
     
     weights_mean = weights_sum / len(earn_weights)
@@ -166,8 +149,8 @@ def decision_datasets(datasets, star_weights, star_parameter):
     drow, dcol = datasets.shape
     result_datasets = np.zeros((drow,dcol))
     for index in range(dcol):
-        if star_weights[0,index] != 0:
-            star_weights[0,index] = (1 - star_weights[0,index]) * star_parameter
+        #if star_weights[0,index] != 0:
+        star_weights[0,index] = (1 - star_weights[0,index]) * star_parameter
         result_datasets[0,index] = datasets[0,index] * star_weights[0,index]
    
     return result_datasets
@@ -207,7 +190,6 @@ def Convert_Info(telNo_list,image_list,name_list, weight ,Ranked, Lat, Lon, Cate
 
 def recommend_system(people_datasets, earn_datasets):
     
-    dict_flow = dict()
     # Data Variable Init & Parameter Setting
     
     '''
@@ -218,10 +200,10 @@ def recommend_system(people_datasets, earn_datasets):
     '''
     
     print("Recommend System Init")
-    PARAMETER_FOR_KMEAN = 1
+    PARAMETER_FOR_KMEAN = 6
     PARAMETER_FOR_DIST = 0.825
     PARAMETER_FOR_STAR = 0.275
-    PARAMETER_FOR_DECISION = 30
+    PARAMETER_FOR_DECISION = 100
     
     data = earn_datasets
     mens = people_datasets
@@ -229,23 +211,6 @@ def recommend_system(people_datasets, earn_datasets):
     # list Data convert To Decision datasets
     telNo_list,image_list, Name_list, lat, lon, category, star, id_list, weights , data, data_nb= json_dataset_converter(data)
     men_lat, men_lon, mens, people_nb = json_people_converter(mens)
-     # scatter men & place
-    
-    # center_value
-    max_lat = max(men_lat)
-    min_lat = min(men_lat)
-    max_lon = max(men_lon)
-    min_lon = min(men_lon)
-    center_lat = min_lat + ((max_lat - min_lat) / 2)
-    center_lon = min_lon + ((max_lon - min_lon) / 2)
-    
-    fig = plt.figure()
-    plt.scatter(lat, lon, label='place', color='blue')
-    plt.scatter(men_lat, men_lon, label='people', color='orange')
-    plt.scatter(center_lat, center_lon, label='center', color='purple')
-    plt.legend(['place', 'people', 'center'])
-    plt.show()
-    fig.savefig('pp_scatter.png')
     
     # Data Vectorized for Algorithm
     dataset_arr = np.zeros((2,data_nb))
@@ -254,68 +219,42 @@ def recommend_system(people_datasets, earn_datasets):
     for lon_index in range(len(lon)):
         dataset_arr[1,lon_index] = lon[lon_index]    
         
-    dict_flow['flow1'] = dataset_arr
     # K-Means Clustering
-    #if people_nb is 3:
-    #    PARAMETER_FOR_KMEAN =2
-    #elif people_nb is 2:
-    #    PARAMETER_FOR_KMEAN = 2
-    #else:
-    #    PARAMETER_FOR_KMEAN =people_nb//2
     label_data, centroid = get_clustering(parameter=PARAMETER_FOR_KMEAN, datasets=dataset_arr.transpose())
     
-    fig = plt.figure()
-    plt.scatter(lat, lon, label='place')
-    plt.scatter(men_lat, men_lon, label='people', color='orange')
-    plt.scatter(centroid[:,0], centroid[:,1], label='centroid', color='black')
-    plt.legend(['place', 'people', 'centroid'])
-    plt.show()
-    fig.savefig('ppc_scatter.png')
-
-    dict_flow['flow2'] = centroid
     # Clustering Selection
     mens_info = dict()
     count = 0
-    #for men in mens:
-    #    dist_list = list()
-    #    for value in range(PARAMETER_FOR_KMEAN):
-    #        c_lat, c_lon = centroid[value,:]
-    #        distance = get_distance_each_value(center_lat, center_lon, c_lat, c_lon)
-    #        dist_list.append(distance)
-    #    mens_info[count] = dist_list
-    #    count += 1
+    for men in mens:
+        dist_list = list()
+        for value in range(PARAMETER_FOR_KMEAN):
+            c_lat, c_lon = centroid[value,:]
+            distance = get_distance_each_value(men['lat'], men['lon'], c_lat, c_lon)
+            dist_list.append(distance)
+        mens_info[count] = dist_list
+        count += 1
     
-    dist_list = list()
-    for value in range(PARAMETER_FOR_KMEAN):
-        c_lat, c_lon = centroid[value,:]
-        distance = get_distance_each_value(center_lat, center_lon, c_lat, c_lon)
-        dist_list.append(distance)        
-    
-    #dict_flow['flow3'] = mens_info
     # Cluster Centroids Normalization
     norm_mens_info = dict()
     
-    norm_data = get_norm_weights(dist_list)
+    for key, value in mens_info.items():
+        norm_data = get_norm_weights(value)
+        norm_mens_info[key] = norm_data
     
-    #for key, value in mens_info.items():
-    #    norm_data = get_norm_weights(value)
-    #    norm_mens_info[key] = norm_data
-    
-    #sum_list = list()
-    #sum_temp = 0
-    #for index in range(PARAMETER_FOR_KMEAN):
-    #    for key in norm_mens_info.keys():
-    #        temp = norm_mens_info[key]
-    #        sum_temp += temp[0,index]
-    #    sum_list.append(sum_temp/PARAMETER_FOR_KMEAN)
-    #    sum_temp = 0
+    sum_list = list()
+    sum_temp = 0
+    for index in range(PARAMETER_FOR_KMEAN):
+        for key in norm_mens_info.keys():
+            temp = norm_mens_info[key]
+            sum_temp += temp[0,index]
+        sum_list.append(sum_temp/PARAMETER_FOR_KMEAN)
+        sum_temp = 0
         
     #print(sum_list)
     #print(np.argmin(sum_list))
     
-    #dict_flow['flow4'] = norm_mens_info
     #Cluster Selected
-    select_label = np.argmin(norm_data)
+    select_label = np.argmin(sum_list)
     dist_index_list = list()
     
     # get datasets in Cluster & Remove other Clusters
@@ -370,7 +309,6 @@ def recommend_system(people_datasets, earn_datasets):
         decision_dataset_arr[0,index] = 1
         decision_star_arr[0,index] = 1
     
-    dict_flow['flow5'] = decision_people_arr
     # distance weight applied
     sum_count = 0
     for nb in range(data_nb):
@@ -378,15 +316,14 @@ def recommend_system(people_datasets, earn_datasets):
             decision_dataset_arr[0,nb] = sum_list[sum_count] * PARAMETER_FOR_DIST
             sum_count+=1
     
-    dict_flow['flow6'] = decision_dataset_arr
     # star point weight applied
     add_star_weights = get_starPoint_weights(weights = decision_star_arr, earn_weights=star)
-    dict_flow['flow7'] = add_star_weights
+    
     #print(add_star_weights)
     
     # decision algorithmn
     weight_decision = decision_datasets(datasets=decision_dataset_arr, star_weights=add_star_weights, star_parameter=PARAMETER_FOR_STAR)
-    dict_flow['flow8'] = weight_decision
+    
     #print(weight_decision)
     weight_list = list()
     for index in dist_index_list:
@@ -397,47 +334,19 @@ def recommend_system(people_datasets, earn_datasets):
     
     
     if len(sorted_weight) < PARAMETER_FOR_DECISION:
-        decision_people_arr,rank_list = get_rank_of_decision(weight=sorted_weight, decision_index=dist_index_list, 
+        dataset_arr,rank_list = get_rank_of_decision(weight=sorted_weight, decision_index=dist_index_list, 
                                                         datasets=decision_people_arr,isOver=False, parameter=PARAMETER_FOR_DECISION) 
     else:
         decision_people_arr,rank_list = get_rank_of_decision(weight=sorted_weight, decision_index=dist_index_list, 
                                                         datasets=decision_people_arr,isOver=True, parameter=PARAMETER_FOR_DECISION) 
-    
-    dict_flow['flow9'] = decision_people_arr
-    
-    scatter_lat_list = list()
-    scatter_lon_list = list()
-    drow, dcol = decision_people_arr.shape
-    for cindex in range(dcol):
-        if decision_people_arr[0,cindex] != 0:
-            scatter_lat_list.append(decision_people_arr[0,cindex])
-        if decision_people_arr[1,cindex] != 0:
-            scatter_lon_list.append(decision_people_arr[1,cindex])
-        
-    
-    fig = plt.figure()
-    plt.scatter(lat, lon, label='place', color='blue')
-    plt.scatter(centroid[:,0], centroid[:,1], label="centroid", color='black')
-    plt.scatter(men_lat, men_lon, label='people', color='orange')
-    plt.scatter(scatter_lat_list, scatter_lon_list, label='decision', color='red')
-
-    plt.legend(['place', 'centroid', 'people', 'decision'])
-    plt.show()
-    fig.savefig('pcpd_scatter.png')
     
     # Convert decision datasets to list
     decision = Convert_Info(telNo_list=telNo_list,image_list = image_list , name_list=Name_list ,weight= weight_decision ,Ranked=rank_list ,Lat=lat ,Lon=lon ,Category=category ,Star=star ,ID=id_list)
     maxDecisionWeight =0
     for d in decision:
         maxDecisionWeight = max(d['weight'],maxDecisionWeight)
-
     for d in decision:
-        d['weight'] =int( d['weight']/maxDecisionWeight*100)
-        
-    decision.reverse()
+        d['weight'] =100-int( d['weight']/maxDecisionWeight*100)
 
-    f=open('flow_datasets.txt','w')
-    f.write(str(dict_flow))
-    f.close()
-
-    return decision 
+   
+    return decision
