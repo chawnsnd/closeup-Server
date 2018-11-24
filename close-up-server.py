@@ -5,79 +5,53 @@
 import asyncio
 import json
 import logging
-import websockets
+from flask import Flask, request, jsonify, Response
 import pymongo
 import sys
 from bson.json_util import dumps
-from component.apis import *
+from flask_cors import CORS
+from dao.closeUpDao import insert_pois
+from service.closeUpService import updateStar, getPoi, getPois, recommendPois
 
-logging.basicConfig()
-
-STATE = {'value': 0}
-LONLAT = {'a_lonlat': None, 'b_lonlat': None}
-USERS = set()
-
-# START DB
-myclient = pymongo.MongoClient("mongodb://localhost:27017/")
-mydb = myclient["CloseUpDB"]
-mycol = mydb["TestPoisCollection"]
+app = Flask(__name__)
+cors = CORS(app, resources={
+  r"/*": {"origin": "*"},
+})
 
 
-# CHECK DB CONNECTION
-dblist = myclient.list_database_names()
-if "CloseUpDB" in dblist:
-    print("CloseUpDB connected")
-else:
-    print("NO DATABASE")
+@app.route("/api/pois", methods=["POST"])
+def DBinsert():
+    req = request.json
+    res = insert_pois(req['pois'],req['categories'])
+    return dumps(res)
 
 
-# SAMPLE CODE
-# print(myclient.list_database_names())
-# collist = mydb.list_collection_names()
-# print(mycol.find_one())
+@app.route("/api/pois", methods=["GET"])
+def pagination():
+    keyWord = request.args.get('keyWord')
+    count = int(request.args.get('count'))
+    page = int(request.args.get('page'))
+    res = getPois(keyWord,count,page)
+    return res
 
-async def notify_state(message):
-    if USERS:       # asyncio.wait doesn't accept an empty list
-        await asyncio.wait([user.send(message) for user in USERS])
+@app.route("/api/pois/<poiId>", methods=["PUT"])
+def starUpdate(poiId):
+    req = request.json
+    res = updateStar(poiId,req)
+    return jsonify(res)
 
-async def register(websocket):
-    print("Client Connected")
-    USERS.add(websocket)
+# @app.route("/api/pois/<poiId>", methods=["GET"])
+# def getPoi(poiId):
+#     res = query_poi(poiId)
+#     return dumps(res)
 
-async def unregister(websocket):
-    print("Client disconnected")
-    USERS.remove(websocket)
+@app.route("/api/recommendPois", methods=["GET"])
+def recommendation():
+    keyWord = request.args.get('keyWord')
+    people_chosen = request.args.getlist('people_chosen[]')
+    res = recommendPois(keyWord,people_chosen)
+    return dumps(res)
 
-async def serve_api(websocket, path):
-    global mycol
-    # register(websocket) sends user_event() to websocket
-    await register(websocket)
-    try:
-        # await websocket.send(query_square_bound())
-        async for message in websocket:
-            data = json.loads(message)
-            #do command
-            command = data['command']
-            if command == "connect()":
-                print("Client Connected")
-            elif command == "insert_pois":
-                await notify_state(insert_pois(data['pois'],data['categories']))
-            elif command =="query_square_bound":
-                await notify_state(dumps({"type":"query_square_bound","response":query_square_bound(data['people_chosen'])}))    
-            elif command =="query_poi":
-                await notify_state(dumps({"type":"query_poi","response":query_poi(data['id'])}))
-            elif command =="update_star":
-                await notify_state(update_star(data['id'],data['starPoint']))
-            elif command == "query_pois":
-                await notify_state(dumps({"type":"query_pois","response":query_pois(data['keyWord'],data['count'],data['page'],mycol)}))
-            elif command == "recommend_api":
-                await notify_state(dumps({"type":"recommend_api","response":recommend_api(data['people_chosen'],data['keyWord'])}))
-            elif command == "query_square_bound_and_keyword":
-                await notify_state(dumps({"type":"query_square_bound_and_keyword","response":query_square_bound_and_keyword(data['people_chosen'],data['keyWord'])}))            
-            
-    finally:
-        await unregister(websocket)
-
-# asyncio.get_event_loop().run_until_complete(websockets.serve(serve_api, 'ec2-13-125-249-233.ap-northeast-2.compute.amazonaws.com', 49152))
-asyncio.get_event_loop().run_until_complete(websockets.serve(serve_api, 'localhost', 49152))
-asyncio.get_event_loop().run_forever()
+if __name__ == '__main__':
+    app.run(host='ec2-13-125-249-233.ap-northeast-2.compute.amazonaws.com',port=5000)
+    # app.run(host='localhost',port=5000)
