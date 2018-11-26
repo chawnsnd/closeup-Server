@@ -12,6 +12,8 @@ Created on Sun Nov 18 03:22:55 2018
 import numpy as np
 from math import sin, cos, asin, sqrt, atan2, radians
 from sklearn.cluster import KMeans
+import matplotlib as mpl
+mpl.use('TkAgg')
 import matplotlib.pyplot as plt
 import pickle
 
