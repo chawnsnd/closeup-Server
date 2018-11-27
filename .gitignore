@@ -4,3 +4,7 @@
 /pcpd_scatter.png
 /pp_scatter.png
 /ppc_scatter.png
+algorithm/__pycache__/Recommend_System_div_ver4.cpython-37.pyc
+dao/__pycache__/__init__.cpython-37.pyc
+dao/__pycache__/closeUpDao.cpython-37.pyc
+service/__pycache__/closeUpService.cpython-37.pyc
