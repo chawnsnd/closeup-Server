@@ -137,4 +137,7 @@ conda install matplotlib
 
 #if you want to remove environment, 
 conda remove --name python3.6_ana --all
+
+#list your environment 
+conda info --envs
 ```
